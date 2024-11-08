@@ -1,17 +1,6 @@
 import tsplib95
-import numpy as np
 from collections import defaultdict
-
-# Function to create the distance matrix from the TSP problem
-def create_distance_matrix(problem):
-    nodes = list(problem.get_nodes())
-    num_nodes = problem.dimension
-    distance_matrix = np.zeros((num_nodes, num_nodes), dtype=int)
-    for i in range(num_nodes):
-        for j in range(num_nodes):
-            if i != j:
-                distance_matrix[i][j] = problem.get_weight(nodes[i], nodes[j])
-    return distance_matrix
+from create_distance_matrix import create_distance_matrix
 
 # Function to find the minimum cost path for all paths using a greedy approach
 def find_min_route(tsp_matrix):
@@ -58,8 +47,7 @@ def find_min_route(tsp_matrix):
 
 # Driver Code
 if __name__ == "__main__":
-    file_path = 'ALL_tsp/bayg29.tsp'
-    problem = tsplib95.load(file_path)
+    problem = tsplib95.load('../ALL_tsp/bayg29.tsp')
     distance_matrix = create_distance_matrix(problem)
     print("Distance Matrix:")
     print(distance_matrix)
