@@ -20,7 +20,7 @@ erick.gary.gomez.soto@univ-st-etienne.fr
 
 #todo/Masters/AAP
 - [ ] Dynamic Programming Approach
-	- [ ] Read the paper: Bouman et al. uploaded on claroline
+	- [x] Read the paper: Bouman et al. uploaded on claroline
 	- [ ] Read the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
 - [ ] Randomized Approach
 - [ ] Graph Generator

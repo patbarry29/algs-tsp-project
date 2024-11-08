@@ -56,23 +56,109 @@ def calculate_distance(distance_matrix, start_node, end_node):
 		Output: Distance between the two nodes
 	"""
 
-	distance = distance_matrix[start_node][end_node]
+	distance = distance_matrix[start_node - 1][end_node - 1]
 
-	return distance()
-
+	return distance
 
 #%% Execution
 
 # load a problem
-problem = tsplib95.load()
+problem = tsplib95.load('ALL_tsp/eil51.tsp')
+nodes = list(problem.get_nodes())
+distance_matrix = create_distance_matrix(problem)
 
 # Get all distances from the starting node
-for v in problem.nodes()
+start_node = determine_start(problem)
 
+# Getting the cost of coming back from the last one
+# aka just the line of the matrix for the starting node
+distances_return = []
 
+for v in nodes:
+	if v == start_node: 
+		distances_return.append(np.inf)
+	if v != start_node:
+		distance_return = calculate_distance(
+			distance_matrix, start_node, end_node=v
+			)
+		distances_return.append(distance_return)
 
+paths = []
+costs = []
+nodes.remove(start_node)
+
+for w in nodes:
+
+	total_cost_path_chosen = distances_return[w-1]
+	
+	nodes.remove(w)
+	distance_current_path = np.inf
+	current_path_chosen = [w, np.inf]
+
+	while len(nodes) > 0:
+
+		for u in nodes:
+
+			distance = total_cost_path_chosen +\
+					calculate_distance(distance_matrix, w, u)
+			
+			if distance < distance_current_path:
+				distance_current_path = distance
+				current_path_chosen[-1] = u
+		
+		total_cost_path_chosen += distance_current_path
+		try:
+			nodes.remove(current_path_chosen[-1])
+		except:
+			continue
+
+		current_path_chosen.append(np.inf)
+
+	costs.append((w, int(total_cost_path_chosen)))
+	paths.append(current_path_chosen)
+
+	nodes = list(problem.get_nodes())
+	nodes.remove(start_node)
+
+print(costs)
+
+#%%
+# iterations = []
+# for i in range(1, problem.dimension): #i es el tamaño del subset de nodos a revisar
+
+# 	for w in nodes:
+
+# 		if (w != start_node):
+
+# 			index_w = paths.index(w)
+# 			ith_sized_distance = distances[index_w]
+# 			ith_sized_path = start_node
+
+# 			line = [i, w]
+
+# 			for u in nodes:
+				
+# 				if (u != w) and (u != start_node):
+
+# 					distance = ith_sized_distance +\
+# 						  calculate_distance(distance_matrix, w, u)
+
+# 					if distance < ith_sized_distance:
+# 						ith_sized_distance = distance
+# 						ith_sized_path = str(u)
+
+# 						line.append((ith_sized_distance, u))
+
+# 					print(f"""
+# Size of problem: {i}
+# Final distance: {ith_sized_distance}
+# Final path: {ith_sized_path}
+# 						""")
+# 			iterations.append(line)
 
 # that's just a row of the matrix 
 
 # store the paths in a table P
 
+
+# %%
