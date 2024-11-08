@@ -1,4 +1,5 @@
 [[00 Main - Advanced Algorithmics and Programming]]
+
 # Project 
 
 Traveling Salesman Problem
@@ -12,14 +13,21 @@ The running time of the algorithms and the quality of the solutions given (in te
 Graphical user interface to illustrate the behavior of the algorithm(s)
 Random generator able to create automatically some TSP problems. It can take into account some options like the level of sparsity of the problem (i.e. level of connectivity), a range over possible edge weights, a distribution for generating the weights, ...)
 
+**TA**
+erick.gary.gomez.soto@univ-st-etienne.fr
+
 ## Tasks 
 
 #todo/Masters/AAP
 - [ ] Dynamic Programming Approach
-	- [ ] Read the paper: Bouman et al. uploaded on claroline, and from the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
+	- [ ] Read the paper: Bouman et al. uploaded on claroline
+	- [ ] Read the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
 - [ ] Randomized Approach
 - [ ] Graph Generator
 - [ ] GUI
 
 ## Links 
 [TSPLIB](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/index.html)
+
+## Notes
+- There must special considerations for the unlinked nodes. Should we initialize the matrix at inf to make a clearer distinction?
