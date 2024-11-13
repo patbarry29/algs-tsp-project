@@ -63,18 +63,18 @@ def calculate_distance(distance_matrix, start_node, end_node):
 #%% Execution
 
 # load a problem
-problem = tsplib95.load('ALL_tsp/eil51.tsp')
-nodes = list(problem.get_nodes())
+problem = tsplib95.load('ALL_tsp/burma14.tsp')
 distance_matrix = create_distance_matrix(problem)
 
 # Get all distances from the starting node
+nodes_ext = list(problem.get_nodes())
 start_node = determine_start(problem)
 
 # Getting the cost of coming back from the last one
 # aka just the line of the matrix for the starting node
 distances_return = []
 
-for v in nodes:
+for v in nodes_ext:
 	if v == start_node: 
 		distances_return.append(np.inf)
 	if v != start_node:
@@ -83,44 +83,61 @@ for v in nodes:
 			)
 		distances_return.append(distance_return)
 
-paths = []
+#paths = []
 costs = []
+nodes_ext = list(problem.get_nodes())
+nodes_ext.remove(start_node)
+
+nodes = list(problem.get_nodes())
 nodes.remove(start_node)
 
-for w in nodes:
+print("Starting node:", start_node)
 
+for w in nodes_ext:
+	
+	print("Trying first layer node: ", w)
 	total_cost_path_chosen = distances_return[w-1]
 	
 	nodes.remove(w)
-	distance_current_path = np.inf
 	current_path_chosen = [w, np.inf]
 
-	while len(nodes) > 0:
+	while len(nodes) > 1:
+		distance_current_path = np.inf
 
 		for u in nodes:
+			print("Trying second layer node: ", u)
 
-			distance = total_cost_path_chosen +\
-					calculate_distance(distance_matrix, w, u)
+			distance = total_cost_path_chosen + calculate_distance(
+				distance_matrix, 
+				current_path_chosen[-2], 
+				u)
 			
 			if distance < distance_current_path:
 				distance_current_path = distance
 				current_path_chosen[-1] = u
 		
 		total_cost_path_chosen += distance_current_path
+		print("CHOSE second layer node: ", current_path_chosen[-1])
+
 		try:
 			nodes.remove(current_path_chosen[-1])
+			print("remaining possible nodes: ", len(nodes))
 		except:
+			print("remaining possible nodes: ", len(nodes))
 			continue
 
 		current_path_chosen.append(np.inf)
 
-	costs.append((w, int(total_cost_path_chosen)))
-	paths.append(current_path_chosen)
+	costs.append([
+		w,
+		int(total_cost_path_chosen),
+		str(start_node) + ', ' + ', '.join([str(x) for x in current_path_chosen[:-1]])
+		])
 
 	nodes = list(problem.get_nodes())
 	nodes.remove(start_node)
 
-print(costs)
+print(np.array(costs))
 
 #%%
 # iterations = []
