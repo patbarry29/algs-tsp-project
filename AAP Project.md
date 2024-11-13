@@ -21,7 +21,10 @@ erick.gary.gomez.soto@univ-st-etienne.fr
 #todo/Masters/AAP
 - [ ] Dynamic Programming Approach
 	- [x] Read the paper: Bouman et al. uploaded on claroline
-	- [ ] Read the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
+	- [x] Read the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
+	- [x] Get cost of chosen path
+	- [ ] Get chosen path
+	- [ ] Test with other type of problems
 - [ ] Randomized Approach
 - [ ] Graph Generator
 - [ ] GUI
@@ -30,4 +33,4 @@ erick.gary.gomez.soto@univ-st-etienne.fr
 [TSPLIB](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/index.html)
 
 ## Notes
-- There must special considerations for the unlinked nodes. Should we initialize the matrix at inf to make a clearer distinction?
+- There must special considerations for the unlinked nodes in that kind of problem. Should we initialize the matrix at inf to make a clearer distinction?

@@ -7,6 +7,7 @@
 
 import tsplib95
 import numpy as np
+from itertools import combinations
 
 #%% Function Definitions
 
@@ -58,124 +59,58 @@ def calculate_distance(distance_matrix, start_node, end_node):
 
 	distance = distance_matrix[start_node - 1][end_node - 1]
 
-	return distance
+	return int(distance)
 
 #%% Execution
 
 # load a problem
-problem = tsplib95.load('ALL_tsp/burma14.tsp')
+problem = tsplib95.load('ALL_tsp/ch130.tsp')
 distance_matrix = create_distance_matrix(problem)
 
-# Get all distances from the starting node
-nodes_ext = list(problem.get_nodes())
-start_node = determine_start(problem)
-
-# Getting the cost of coming back from the last one
-# aka just the line of the matrix for the starting node
-distances_return = []
-
-for v in nodes_ext:
-	if v == start_node: 
-		distances_return.append(np.inf)
-	if v != start_node:
-		distance_return = calculate_distance(
-			distance_matrix, start_node, end_node=v
-			)
-		distances_return.append(distance_return)
-
-#paths = []
-costs = []
-nodes_ext = list(problem.get_nodes())
-nodes_ext.remove(start_node)
-
 nodes = list(problem.get_nodes())
-nodes.remove(start_node)
-
-print("Starting node:", start_node)
-
-for w in nodes_ext:
-	
-	print("Trying first layer node: ", w)
-	total_cost_path_chosen = distances_return[w-1]
-	
-	nodes.remove(w)
-	current_path_chosen = [w, np.inf]
-
-	while len(nodes) > 1:
-		distance_current_path = np.inf
-
-		for u in nodes:
-			print("Trying second layer node: ", u)
-
-			distance = total_cost_path_chosen + calculate_distance(
-				distance_matrix, 
-				current_path_chosen[-2], 
-				u)
-			
-			if distance < distance_current_path:
-				distance_current_path = distance
-				current_path_chosen[-1] = u
-		
-		total_cost_path_chosen += distance_current_path
-		print("CHOSE second layer node: ", current_path_chosen[-1])
-
-		try:
-			nodes.remove(current_path_chosen[-1])
-			print("remaining possible nodes: ", len(nodes))
-		except:
-			print("remaining possible nodes: ", len(nodes))
-			continue
-
-		current_path_chosen.append(np.inf)
-
-	costs.append([
-		w,
-		int(total_cost_path_chosen),
-		str(start_node) + ', ' + ', '.join([str(x) for x in current_path_chosen[:-1]])
-		])
-
-	nodes = list(problem.get_nodes())
-	nodes.remove(start_node)
-
-print(np.array(costs))
+first_city = determine_start(problem)
 
 #%%
-# iterations = []
-# for i in range(1, problem.dimension): #i es el tamaño del subset de nodos a revisar
+# Getting the cost of coming back if you are the last one
+distances = {}
+paths = {}
 
-# 	for w in nodes:
+for v in nodes:
+	#path = [v, first_city]
+	dist = calculate_distance(distance_matrix, v, first_city)
 
-# 		if (w != start_node):
+	distances[(frozenset([v]), v)] = dist
 
-# 			index_w = paths.index(w)
-# 			ith_sized_distance = distances[index_w]
-# 			ith_sized_path = start_node
+nodes.remove(first_city)
 
-# 			line = [i, w]
+i = 2
+for i in range(2, len(nodes)+1):
 
-# 			for u in nodes:
-				
-# 				if (u != w) and (u != start_node):
+	# generar subsets de nodos y mirar si ya estan en la tabla o no, e ir haciendo el de la tabla + el del par que queda
+	for S in combinations(nodes, i):
 
-# 					distance = ith_sized_distance +\
-# 						  calculate_distance(distance_matrix, w, u)
+		subset = frozenset(S)
 
-# 					if distance < ith_sized_distance:
-# 						ith_sized_distance = distance
-# 						ith_sized_path = str(u)
+		for w in subset:
+			distances[(subset, w)] = float(np.inf)
 
-# 						line.append((ith_sized_distance, u))
+			for u in subset - {w}:
+				dist = distances[(subset- {w}, u)] + calculate_distance(distance_matrix, u, w)
 
-# 					print(f"""
-# Size of problem: {i}
-# Final distance: {ith_sized_distance}
-# Final path: {ith_sized_path}
-# 						""")
-# 			iterations.append(line)
+				if dist < distances[(subset, w)]: #camino hasta w
+					distances[(subset, w)] = dist
+					paths[(subset, w)] = u
 
-# that's just a row of the matrix 
+# Assuming 'V' is the set of cities, and 'start_city' is your arbitrary start city (e.g., v)
+full_set = frozenset(nodes)  # All cities visited, except starting city
+min_cost = float('inf')  # Initialize with infinity
 
-# store the paths in a table P
+# Look for the minimum cost to complete the tour by considering all possible end cities 'w'
+for w in nodes:
+    if w != first_city:  # Skip the starting city
+        # The cost of completing the tour through city 'w' and then returning to start_city
+        cost = distances[(full_set, w)] + calculate_distance(distance_matrix, w, first_city)  # Add cost to return to the start city
+        min_cost = min(min_cost, cost)
 
-
+print("Optimal cost:", min_cost)
 # %%
