@@ -7,7 +7,7 @@ def generate_tsp(n, dim_size=100, sparsity=0):
   distance_matrix = None
   if sparsity > 0:
     distance_matrix = np.array([[np.sqrt((x1[0] - x2[0])**2 + (x1[1] - x2[1])**2) for x1 in cities] for x2 in cities])
-    distance_matrix = add_sparsity(distance_matrix, sparsity)
+    distance_matrix = add_sparsity(distance_matrix, sparsity, symmetric=True)
   save_matrix_file(cities, distance_matrix)
   return cities
 

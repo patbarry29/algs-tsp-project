@@ -80,7 +80,7 @@ def solve_tsp_brute_force(problem):
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
     problem = tsplib95.load('random_tsp.tsp')
-    problem = tsplib95.load('random_atsp.atsp')
+    # problem = tsplib95.load('random_atsp.atsp')
 
     # Solve the problem
     start = time.time()
