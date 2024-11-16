@@ -9,6 +9,8 @@ import tsplib95
 import numpy as np
 from itertools import combinations
 
+from tsp_problems import opt_solution
+
 #%% Function Definitions
 
 def create_distance_matrix(problem):
@@ -29,6 +31,7 @@ def create_distance_matrix(problem):
 			if i != j:
 				distance_matrix[i][j] = problem.get_weight(nodes[i], nodes[j])
 	return distance_matrix
+
 
 def determine_start(problem):
 
@@ -63,30 +66,28 @@ def calculate_distance(distance_matrix, start_node, end_node):
 
 #%% Execution
 
-# load a problem
-problem = tsplib95.load('ALL_tsp/ch130.tsp')
+# Load a problem
+file = 'burma14'
+problem = tsplib95.load(f'ALL_tsp/{file}.tsp')
 distance_matrix = create_distance_matrix(problem)
 
 nodes = list(problem.get_nodes())
 first_city = determine_start(problem)
 
-#%%
 # Getting the cost of coming back if you are the last one
 distances = {}
 paths = {}
 
 for v in nodes:
-	#path = [v, first_city]
 	dist = calculate_distance(distance_matrix, v, first_city)
-
 	distances[(frozenset([v]), v)] = dist
 
 nodes.remove(first_city)
 
-i = 2
+# Calculating the costs of all possible paths, and storing the mins
 for i in range(2, len(nodes)+1):
 
-	# generar subsets de nodos y mirar si ya estan en la tabla o no, e ir haciendo el de la tabla + el del par que queda
+	# Making nodes subsets
 	for S in combinations(nodes, i):
 
 		subset = frozenset(S)
@@ -97,20 +98,45 @@ for i in range(2, len(nodes)+1):
 			for u in subset - {w}:
 				dist = distances[(subset- {w}, u)] + calculate_distance(distance_matrix, u, w)
 
-				if dist < distances[(subset, w)]: #camino hasta w
-					distances[(subset, w)] = dist
-					paths[(subset, w)] = u
+				if dist < distances[(subset, w)]:
+					distances[(subset, w)] = dist # Rewriting the best cost from the subset to the current city
+					paths[(subset, w)] = u		  # Writing the best last city from this subset to the current city
 
-# Assuming 'V' is the set of cities, and 'start_city' is your arbitrary start city (e.g., v)
+# Getting the smallest cost
 full_set = frozenset(nodes)  # All cities visited, except starting city
-min_cost = float('inf')  # Initialize with infinity
+min_cost = float(np.inf)
 
-# Look for the minimum cost to complete the tour by considering all possible end cities 'w'
+# Look for the minimum distance to complete the tour
 for w in nodes:
-    if w != first_city:  # Skip the starting city
-        # The cost of completing the tour through city 'w' and then returning to start_city
-        cost = distances[(full_set, w)] + calculate_distance(distance_matrix, w, first_city)  # Add cost to return to the start city
-        min_cost = min(min_cost, cost)
+	cost = distances[(full_set, w)] + calculate_distance(distance_matrix, w, first_city)  # Add cost to return to the start city
+	if cost < min_cost:
+		min_cost = min(min_cost, cost)
+		final_city = w
 
-print("Optimal cost:", min_cost)
-# %%
+# Getting the path
+path = []
+current_city = final_city
+current_subset = full_set
+
+while (len(path) < len(nodes)-1):
+	path.append(current_city)
+	previous_city = paths[(current_subset, current_city)]  # Get the predecessor
+	current_subset = current_subset - {current_city}
+	current_city = previous_city
+
+# Add the final city and the start city to close the tour
+path.append(current_city)
+path.append(first_city)
+path.reverse()
+
+results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
+results.append([
+	file,
+	opt_solution[file],
+	min_cost,
+	"-".join([str(x) for x in path])
+])
+
+# Save the array to a text file in CSV format
+results = np.array(results)
+np.savetxt(f"TSP_results_{file}.csv", results, delimiter=",", fmt="%s")

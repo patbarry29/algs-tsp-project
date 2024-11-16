@@ -23,7 +23,7 @@ erick.gary.gomez.soto@univ-st-etienne.fr
 	- [x] Read the paper: Bouman et al. uploaded on claroline
 	- [x] Read the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
 	- [x] Get cost of chosen path
-	- [ ] Get chosen path
+	- [x] Get chosen path
 	- [ ] Test with other type of problems
 - [ ] Randomized Approach
 - [ ] Graph Generator
