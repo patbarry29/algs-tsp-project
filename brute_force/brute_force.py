@@ -12,16 +12,10 @@ sys.path.append(parent_dir)
 from create_distance_matrix import create_distance_matrix
 
 
+
 def calculate_tour_distance(tour, distance_matrix, curr_best):
     """
     Calculate the total distance of a tour using the distance matrix.
-
-    Args:
-        tour (list): List of indices representing the tour
-        distance_matrix (numpy.ndarray): Pre-computed distance matrix
-
-    Returns:
-        float: Total distance of the tour
     """
     total_distance = 0
     for i in range(len(tour)):
@@ -41,12 +35,6 @@ def print_loading_bar(i, total):
 def solve_tsp_brute_force(problem):
     """
     Solve TSP using brute force approach with pre-computed distance matrix.
-
-    Args:
-        problem (tsplib95.models.Problem): TSP problem instance
-
-    Returns:
-        tuple: (best_tour, best_distance)
     """
     # Create distance matrix
     distance_matrix = create_distance_matrix(problem)
@@ -91,9 +79,9 @@ def solve_tsp_brute_force(problem):
 
     return best_tour, best_distance
 
-def main():
+if __name__ == "__main__":
     # Example usage with a TSPLIB problem
-    problem = tsplib95.load('random_tsp.tsp')
+    problem = tsplib95.load('random_atsp.atsp')
 
     # Solve the problem
     start = time.time()
@@ -104,6 +92,3 @@ def main():
     print(f"Best tour found: {best_tour}")
     print(f"Tour distance: {best_distance}")
     print(f"Time Taken: {end-start}")
-
-if __name__ == "__main__":
-    main()

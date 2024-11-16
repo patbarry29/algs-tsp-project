@@ -1,8 +1,11 @@
 import numpy as np
 
+from visualise_problem import visualise
+
 def generate_tsp(n,dim_size=100):
   cities = np.random.uniform(0, dim_size, size=(n, 2))
   save_tsp_file(cities)
+  return cities
 
 def save_tsp_file(cities, filename="random_tsp.tsp"):
   with open(filename, "w") as f:
@@ -20,16 +23,6 @@ def save_tsp_file(cities, filename="random_tsp.tsp"):
     # End of file
     f.write("EOF\n")
 
-def visualise(problem):
-  import matplotlib.pyplot as plt
-  x_coords, y_coords = zip(*problem)
-  plt.scatter(x_coords, y_coords)
-  for i, (x, y) in enumerate(problem):
-      plt.text(x, y, str(i), fontsize=12)
-  plt.title(f"Random TSP Instance of Size {len(problem)}")
-  plt.show()
+cities = generate_tsp(10, 10)
 
-
-generate_tsp(8, 100)
-
-# visualise(cities)
+visualise(cities)
