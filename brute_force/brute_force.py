@@ -93,7 +93,7 @@ def solve_tsp_brute_force(problem):
 
 def main():
     # Example usage with a TSPLIB problem
-    problem = tsplib95.load('data/ALL_tsp/burma14.tsp')
+    problem = tsplib95.load('random_tsp.tsp')
 
     # Solve the problem
     start = time.time()
