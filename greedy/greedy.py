@@ -47,7 +47,7 @@ def find_min_route(tsp_matrix):
 
 # Driver Code
 if __name__ == "__main__":
-    problem = tsplib95.load('../ALL_tsp/bayg29.tsp')
+    problem = tsplib95.load('../ALL_atsp/br17.atsp')
     distance_matrix = create_distance_matrix(problem)
     print("Distance Matrix:")
     print(distance_matrix)
