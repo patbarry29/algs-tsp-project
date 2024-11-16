@@ -1,5 +1,12 @@
 import tsplib95
 from collections import defaultdict
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
 from create_distance_matrix import create_distance_matrix
 
 # Function to find the minimum cost path for all paths using a greedy approach
@@ -47,7 +54,7 @@ def find_min_route(tsp_matrix):
 
 # Driver Code
 if __name__ == "__main__":
-    problem = tsplib95.load('../ALL_tsp/bayg29.tsp')
+    problem = tsplib95.load('data/ALL_tsp/bayg29.tsp')
     distance_matrix = create_distance_matrix(problem)
     print("Distance Matrix:")
     print(distance_matrix)
