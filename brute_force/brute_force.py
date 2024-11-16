@@ -11,8 +11,6 @@ sys.path.append(parent_dir)
 
 from create_distance_matrix import create_distance_matrix
 
-
-
 def calculate_tour_distance(tour, distance_matrix, curr_best):
     """
     Calculate the total distance of a tour using the distance matrix.
@@ -81,6 +79,7 @@ def solve_tsp_brute_force(problem):
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
+    problem = tsplib95.load('random_tsp.tsp')
     problem = tsplib95.load('random_atsp.atsp')
 
     # Solve the problem
