@@ -1,28 +1,15 @@
 import numpy as np
+from save_tsp_file import save_matrix_file
+from helpers import add_sparsity
 
-from visualise_problem import visualise
-
-def generate_tsp(n,dim_size=100):
+def generate_tsp(n, dim_size=100, sparsity=0):
   cities = np.random.uniform(0, dim_size, size=(n, 2))
-  save_tsp_file(cities)
+  distance_matrix = None
+  if sparsity > 0:
+    distance_matrix = np.array([[np.sqrt((x1[0] - x2[0])**2 + (x1[1] - x2[1])**2) for x1 in cities] for x2 in cities])
+    distance_matrix = add_sparsity(distance_matrix, sparsity, symmetric=True)
+  save_matrix_file(cities, distance_matrix)
   return cities
 
-def save_tsp_file(cities, filename="random_tsp.tsp"):
-  with open(filename, "w") as f:
-    # Write the header
-    f.write("NAME : Random_TSP_Instance\n")
-    f.write("TYPE : TSP\n")
-    f.write(f"DIMENSION : {len(cities)}\n")
-    f.write("EDGE_WEIGHT_TYPE : EUC_2D\n")
-    f.write("NODE_COORD_SECTION\n")
-
-    # Write the city coordinates
-    for i, (x, y) in enumerate(cities, start=1):
-        f.write(f"{i} {x:.6f} {y:.6f}\n")
-
-    # End of file
-    f.write("EOF\n")
-
-cities = generate_tsp(10, 10)
-
-visualise(cities)
+if __name__ == "__main__":
+  cities = generate_tsp(n=5, dim_size=10, sparsity=0.8)

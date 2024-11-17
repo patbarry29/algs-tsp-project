@@ -1,30 +1,16 @@
 import numpy as np
+from save_tsp_file import save_matrix_file
+from helpers import add_sparsity
 
-def generate_atsp(n, dim_size=100):
+def generate_atsp(n, dim_size=100, sparsity=0):
     # Generate a random asymmetric distance matrix
     distance_matrix = np.random.randint(1, dim_size, size=(n, n))
-    np.fill_diagonal(distance_matrix, np.max(distance_matrix)*10000)  # Ensure no self-loops (distance to self is 0)
+    np.fill_diagonal(distance_matrix, 0)
+    if sparsity > 0:
+        distance_matrix = add_sparsity(distance_matrix, sparsity, symmetric=False)
 
-    # Save to a file in ATSP format
-    save_atsp_file(distance_matrix)
-
-def save_atsp_file(distance_matrix, filename="random_atsp.atsp"):
-    n = distance_matrix.shape[0]
-    with open(filename, "w") as f:
-        # Write the header
-        f.write("NAME : Random_ATSP_Instance\n")
-        f.write("TYPE : ATSP\n")
-        f.write(f"DIMENSION : {n}\n")
-        f.write("EDGE_WEIGHT_TYPE : EXPLICIT\n")
-        f.write("EDGE_WEIGHT_FORMAT : FULL_MATRIX\n")
-        f.write("EDGE_WEIGHT_SECTION\n")
-
-        # Write the distance matrix
-        for row in distance_matrix:
-            f.write(" ".join(map(str, row)) + "\n")
-
-        # End of file
-        f.write("EOF\n")
+    save_matrix_file(matrix=distance_matrix, filename="random_atsp.atsp",type="ATSP")
 
 # Example usage
-generate_atsp(11, dim_size=100)
+if __name__ == "__main__":
+  generate_atsp(n=4, dim_size=10, sparsity=0.8)
