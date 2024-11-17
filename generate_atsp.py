@@ -13,4 +13,4 @@ def generate_atsp(n, dim_size=100, sparsity=0):
 
 # Example usage
 if __name__ == "__main__":
-  generate_atsp(8, dim_size=100, sparsity=0.7)
+  generate_atsp(n=4, dim_size=10, sparsity=0.8)

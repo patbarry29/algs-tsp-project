@@ -12,14 +12,12 @@ def add_sparsity(distance_matrix, sparsity, symmetric):
     mask = np.zeros((num_nodes, num_nodes), dtype=bool)
 
     # 3. Add edges along the random path
-    for i in range(num_nodes - 1):
+    for i in range(num_nodes):
         mask[path[i], path[i+1]] = True
         if symmetric:
           mask[path[i+1], path[i]] = True
 
-    mask[path[-1], path[0]] = True
-    if symmetric:
-      mask[path[0], path[-1]] = True
+    print(mask)
 
     # 4. Add random edges based on sparsity, excluding the random path edges
     random_mask = np.random.rand(num_nodes, num_nodes) > sparsity

@@ -10,6 +10,7 @@ parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
 from create_distance_matrix import create_distance_matrix
+from generate_atsp import generate_atsp
 
 def calculate_tour_distance(tour, distance_matrix, curr_best):
     """
@@ -79,15 +80,17 @@ def solve_tsp_brute_force(problem):
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
-    problem = tsplib95.load('random_tsp.tsp')
-    # problem = tsplib95.load('random_atsp.atsp')
+    for i in range(10):
+        generate_atsp(n=5, dim_size=10, sparsity=0.8)
+        # problem = tsplib95.load('random_tsp.tsp')
+        problem = tsplib95.load('random_atsp.atsp')
 
-    # Solve the problem
-    start = time.time()
-    best_tour, best_distance = solve_tsp_brute_force(problem)
-    end = time.time()
+        # Solve the problem
+        start = time.time()
+        best_tour, best_distance = solve_tsp_brute_force(problem)
+        end = time.time()
 
-    # Print results
-    print(f"Best tour found: {best_tour}")
-    print(f"Tour distance: {best_distance}")
-    print(f"Time Taken: {end-start}")
+        # Print results
+        print(f"Best tour found: {best_tour}")
+        print(f"Tour distance: {best_distance}")
+        print(f"Time Taken: {end-start}")
