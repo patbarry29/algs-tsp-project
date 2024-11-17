@@ -1,11 +1,13 @@
 import numpy as np
 
-def generate_random_weights(distance_matrix, weight_range=(1, 100)):
+def generate_random_weights(distance_matrix, weight_range=(1, 100), int_coords=False):
     """
     Replace non-zero distances with random weights within the range.
     weight_range: (min_weight, max_weight).
     """
-    random_weights = np.random.randint(weight_range[0], weight_range[1], size=distance_matrix.shape)
+    random_weights = np.random.uniform(weight_range[0], weight_range[1], size=distance_matrix.shape)
+    if int_coords:
+        random_weights = np.random.randint(weight_range[0], weight_range[1], size=distance_matrix.shape)
     random_weighted_matrix = np.where(distance_matrix > 0, random_weights, 0)
     return random_weighted_matrix
 
