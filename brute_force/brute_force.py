@@ -12,18 +12,16 @@ sys.path.append(parent_dir)
 from create_distance_matrix import create_distance_matrix
 from generate_atsp import generate_atsp
 
-def calculate_tour_distance(tour, distance_matrix, curr_best):
+def calculate_tour_distance(tour, distance_matrix):
     """
     Calculate the total distance of a tour using the distance matrix.
     """
     total_distance = 0
-    for i in range(len(tour)):
+    for i in range(len(tour)-1):
         # Get the weight between current city and next city (wrap around to start for last city)
         current_city = tour[i]
         next_city = tour[(i + 1) % len(tour)]
         total_distance += distance_matrix[current_city][next_city]
-        if total_distance > curr_best:
-            return total_distance
     return total_distance
 
 def print_loading_bar(i, total):
@@ -41,7 +39,7 @@ def solve_tsp_brute_force(problem):
     # Get number of nodes
     num_nodes = problem.dimension
     if num_nodes > 15:
-      raise ValueError("It is unfeasible to run brute force on this problem.")
+        raise ValueError("It is unfeasible to run brute force on this problem.")
 
     # Use indices for cities (0 to num_nodes-1)
     start_city = 0
@@ -54,20 +52,20 @@ def solve_tsp_brute_force(problem):
     total_permutations = math.factorial(num_nodes - 1)
     i = 0
     for perm in itertools.permutations(other_cities):
-      # Create complete tour by adding start city at beginning and end
-      current_tour = [start_city] + list(perm) + [start_city]
+        # Create complete tour by adding start city at beginning and end
+        current_tour = [start_city] + list(perm) + [start_city]
 
-      # Calculate total distance using the distance matrix
-      current_distance = calculate_tour_distance(current_tour, distance_matrix, best_distance)
+        # Calculate total distance using the distance matrix
+        current_distance = calculate_tour_distance(current_tour, distance_matrix)
 
-      i += 1
-      # Print loading bar
-      print_loading_bar(i, total_permutations)
+        i += 1
+        # Print loading bar
+        print_loading_bar(i, total_permutations)
 
-      # Update best tour if current tour is shorter
-      if current_distance < best_distance:
-        best_distance = current_distance
-        best_tour = current_tour
+        # Update best tour if current tour is shorter
+        if current_distance < best_distance:
+            best_distance = current_distance
+            best_tour = current_tour
 
     print()
 
@@ -76,13 +74,13 @@ def solve_tsp_brute_force(problem):
         nodes = list(problem.get_nodes())
         best_tour = [nodes[i] for i in best_tour]
 
-    return best_tour, best_distance
+    return best_tour, round(best_distance,2)
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
     generate_atsp(n=5, dim_size=10, sparsity=0.2)
-    # problem = tsplib95.load('random_tsp.tsp')
-    problem = tsplib95.load('random_atsp.atsp')
+    problem = tsplib95.load('random_tsp.tsp')
+    # problem = tsplib95.load('random_atsp.atsp')
 
     # Solve the problem
     start = time.time()
