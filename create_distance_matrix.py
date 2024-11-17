@@ -9,5 +9,4 @@ def create_distance_matrix(problem):
         for j in range(num_nodes):
             if i != j:
                 distance_matrix[i][j] = problem.get_weight(nodes[i], nodes[j])
-    print(distance_matrix)
     return distance_matrix

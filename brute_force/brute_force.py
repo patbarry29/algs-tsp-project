@@ -2,6 +2,7 @@ import math
 import tsplib95
 import itertools
 import time
+import numpy as np
 import sys
 import os
 
@@ -72,7 +73,7 @@ def solve_tsp_brute_force(problem):
     # Convert indices back to actual node numbers if needed
     if best_tour:
         nodes = list(problem.get_nodes())
-        best_tour = [nodes[i] for i in best_tour]
+        best_tour = [nodes[i]+1 for i in best_tour]
 
     return best_tour, round(best_distance,2)
 
