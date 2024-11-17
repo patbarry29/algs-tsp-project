@@ -4,6 +4,8 @@ First do all your other imports (like ones from inside your own directory) and t
 
 ```python
 # all other imports up here
+import sys
+import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
