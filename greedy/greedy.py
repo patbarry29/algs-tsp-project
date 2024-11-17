@@ -41,6 +41,7 @@ def find_min_route(tsp_matrix):
 
         # Update the total cost and reset for the next iteration
         total_cost += min_distance
+        print(total_cost)
         min_distance = float('inf')
         visited_cities[route[step_counter + 1] - 1] = 1
         current_city = route[step_counter + 1] - 1
@@ -48,28 +49,34 @@ def find_min_route(tsp_matrix):
 
     # Complete the tour by returning to the starting city
     last_city = route[step_counter] - 1
-    for next_city in range(num_nodes):
-        if last_city != next_city and tsp_matrix[last_city][next_city] < min_distance:
-            min_distance = tsp_matrix[last_city][next_city]
-            route[step_counter + 1] = next_city + 1
+    # for next_city in range(num_nodes):
+    #     if last_city != next_city and tsp_matrix[last_city][next_city] < min_distance:
+    #         min_distance = tsp_matrix[last_city][next_city]
+    #         route[step_counter + 1] = next_city + 1
+    min_distance = tsp_matrix[last_city][0]  # Distance back to starting city
+    total_cost += min_distance  # Add the cost to return to the starting city
+    route[step_counter + 1] = 1  # Close the loop by returning to City 0
+    # print(f"Last city visited: {last_city}")
+    # print(f"Returning to City 0 with distance: {tsp_matrix[last_city][0]}")
 
-    total_cost += min_distance
+    # total_cost += min_distance
 
     # Add the return to the starting city to the route
-    route[step_counter + 1] = 1
+    # route[step_counter + 1] = 1
 
     return route[:step_counter + 2], total_cost
 
 # Driver Code
 if __name__ == "__main__":
-    data = "bayg29"
+    # data = "bayg29"
     # Load the problem instance using TSPLIB
-    problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
+    # problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
+    problem = tsplib95.load('../random_tsp.tsp')
 
     # Generate the distance matrix
     distance_matrix = create_distance_matrix(problem)
     # print("Distance Matrix:")
-    # print(distance_matrix)
+    print(distance_matrix)
 
     # Measure CPU usage and execution time
     result, running_time, cpu_usage = compute_cpu_usage(find_min_route, distance_matrix)
@@ -85,11 +92,11 @@ if __name__ == "__main__":
     print(f"CPU Usage: {cpu_usage:.4f}%")
 
     # Add TSPLIB optimal solutions for comparison if known
-    optimal_cost = get_optimal_cost(opt_sol.data, data)
-    if optimal_cost is not None:
-        relative_error = (total_cost - optimal_cost) / optimal_cost * 100
-        print(f"Optimal Cost: {optimal_cost}")
-        print(f"Relative Error: {relative_error:.2f}%")
+    # optimal_cost = get_optimal_cost(opt_sol.data, data)
+    # if optimal_cost is not None:
+    #     relative_error = (total_cost - optimal_cost) / optimal_cost * 100
+    #     print(f"Optimal Cost: {optimal_cost}")
+    #     print(f"Relative Error: {relative_error:.2f}%")
 
     # Plot the cost vs. number of cities
-    plot_cost_vs_cities(find_min_route)
+    # plot_cost_vs_cities(find_min_route)
