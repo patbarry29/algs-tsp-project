@@ -17,8 +17,6 @@ def add_sparsity(distance_matrix, sparsity, symmetric):
         if symmetric:
           mask[path[i+1], path[i]] = True
 
-    print(mask)
-
     # 4. Add random edges based on sparsity, excluding the random path edges
     random_mask = np.random.rand(num_nodes, num_nodes) > sparsity
     mask = np.logical_or(mask, np.logical_and(random_mask, np.logical_not(mask)))

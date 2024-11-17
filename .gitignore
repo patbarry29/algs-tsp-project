@@ -9,5 +9,6 @@ __pycache__/
 .idea/
 
 *.pyc
+
 random_tsp.tsp
 random_atsp.atsp

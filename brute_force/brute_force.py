@@ -80,17 +80,16 @@ def solve_tsp_brute_force(problem):
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
-    for i in range(10):
-        generate_atsp(n=5, dim_size=10, sparsity=0.8)
-        # problem = tsplib95.load('random_tsp.tsp')
-        problem = tsplib95.load('random_atsp.atsp')
+    generate_atsp(n=5, dim_size=10, sparsity=0.2)
+    # problem = tsplib95.load('random_tsp.tsp')
+    problem = tsplib95.load('random_atsp.atsp')
 
-        # Solve the problem
-        start = time.time()
-        best_tour, best_distance = solve_tsp_brute_force(problem)
-        end = time.time()
+    # Solve the problem
+    start = time.time()
+    best_tour, best_distance = solve_tsp_brute_force(problem)
+    end = time.time()
 
-        # Print results
-        print(f"Best tour found: {best_tour}")
-        print(f"Tour distance: {best_distance}")
-        print(f"Time Taken: {end-start}")
+    # Print results
+    print(f"Best tour found: {best_tour}")
+    print(f"Tour distance: {best_distance}")
+    print(f"Time Taken: {end-start}")
