@@ -19,15 +19,20 @@ erick.gary.gomez.soto@univ-st-etienne.fr
 ## Tasks 
 
 #todo/Masters/AAP
-- [ ] Dynamic Programming Approach
+- [x] Dynamic Programming Approach
 	- [x] Read the paper: Bouman et al. uploaded on claroline
 	- [x] Read the wikipedia page of the Held-Karp algorithm: https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm.
 	- [x] Get cost of chosen path
 	- [x] Get chosen path
-	- [ ] Test with other type of problems
+	- [x] Test with other type of problems
 - [ ] Randomized Approach
 	- [ ] Understand the papers maybe
-- [ ] Graph Generator
+	- [ ] MST
+	- [ ] Perfect matching
+	- [ ] Graph combination
+	- [ ] Eulerian Tour
+	- [ ] TSP
+- [x] Graph Generator
 - [ ] GUI
 
 ## Links 
@@ -44,8 +49,8 @@ Get the MST, a graph that had all nodes joined with no cycles and it's min weigh
 
 A MST has edges that are only connected to one or three vertex instead of two, in a TSP ever node gets two connections. Pair up those odd-connection nodes.
 
-| ![[file-20241119135403511.png]] | ![[file-20241119135444193.png]] |
-| ------------------------------- | ------------------------------- |
+| ![image](<assets/AAP Project/file-20241119135403511.png>) | ![image](<assets/AAP Project/file-20241119135444193.png>) |
+| --------------------------------------------------------- | --------------------------------------------------------- |
 
 perfect matching of the vertices -- get the best pairs, the less costly pairs.
 - [?] What do you do if the odd nodes... are odd? which one do you ignore?
@@ -58,10 +63,13 @@ Then you make that into a TSP tour by removing any doubling down there is.
 	- any path that goes to every node of the remaining graph, skipping any you've already been in.
 The cost will be close to the optimum, within 50% of it. 
 
-![[file-20241119132402233.png]]
+![](<assets/AAP Project/file-20241119132402233.png>)
 
 Improve after this
 - random swapping
 - 2-opt
 - 3-opt
 - k-opt
+
+Library to compare against maybe 
+networkx==2.8.8

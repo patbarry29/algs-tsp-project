@@ -60,7 +60,7 @@ def calculate_distance(distance_matrix, start_node, end_node):
 
 	distance = distance_matrix[start_node - 1][end_node - 1]
 
-	return distance
+	return float(distance)
 
 
 def dynamic_programming(distance_matrix):
@@ -77,6 +77,7 @@ def dynamic_programming(distance_matrix):
 	"""
 
 	nodes = list(np.arange(distance_matrix.shape[0])+1)
+	nodes = [int(x) for x in nodes]
 	first_city = determine_start(nodes)
 
 	# Getting the cost of coming back if you are the last one
@@ -105,7 +106,7 @@ def dynamic_programming(distance_matrix):
 
 					if dist < distances[(subset, w)]:
 						distances[(subset, w)] = dist # Rewriting the best cost from the subset to the current city
-						paths[(subset, w)] = u		  # Writing the best last city from this subset to the current city
+						paths[(subset, w)] = u	  # Writing the best last city from this subset to the current city
 
 	# Getting the smallest cost
 	full_set = frozenset(nodes)  # All cities visited, except starting city
@@ -141,12 +142,16 @@ def dynamic_programming(distance_matrix):
 
 #from tsp_problems import opt_solution
 
-# file = 'burma14'
-# problem = tsplib95.load(f'ALL_tsp/{file}.tsp')
-# distance_matrix = create_distance_matrix(problem)
+#file = 'p43'
 
-# result = dynamic_programming(distance_matrix)
+from generate_atsp import generate_atsp
 
+generate_atsp(n=15, dim_size=100, sparsity=0.8)
+problem = tsplib95.load(f'random_atsp.atsp')
+distance_matrix = create_distance_matrix(problem)
+result = dynamic_programming(distance_matrix)
+
+print(result)
 # results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
 	# results.append([
 	# 	file,
