@@ -3,13 +3,13 @@
 # Dynamic Programming Approach
 # Developer: Chelsy Mena
 
-#%% Library Imports
+#%% lIBRARY IMPORTS
 
 import tsplib95
 import numpy as np
 from itertools import combinations
 
-#%% Function Definitions
+#%% FUNCTION DEFINITIONS
 
 def create_distance_matrix(problem):
     
@@ -62,7 +62,6 @@ def calculate_distance(distance_matrix, start_node, end_node):
 
 	return distance
 
-#%% Execution
 
 def dynamic_programming(distance_matrix):
 
@@ -136,6 +135,7 @@ def dynamic_programming(distance_matrix):
 	path.reverse()
 
 	return (path, min_cost)
+#%% EXECUTION
 
 # Load a problem
 

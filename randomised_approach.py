@@ -3,7 +3,7 @@
 # Randomised Approach
 # Developer: Chelsy Mena
 
-#%% Library Imports
+#%% LIBRARY IMPORTS
 
 import tsplib95
 import numpy as np
