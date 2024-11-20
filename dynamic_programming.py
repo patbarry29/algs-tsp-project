@@ -71,72 +71,80 @@ file = 'burma14'
 problem = tsplib95.load(f'ALL_tsp/{file}.tsp')
 distance_matrix = create_distance_matrix(problem)
 
-nodes = list(problem.get_nodes())
-first_city = determine_start(problem)
+params = {'problem': problem}
 
-# Getting the cost of coming back if you are the last one
-distances = {}
-paths = {}
+def dynamic_programming(distance_matrix, params):
 
-for v in nodes:
-	dist = calculate_distance(distance_matrix, v, first_city)
-	distances[(frozenset([v]), v)] = dist
+	problem = params.get('problem')
 
-nodes.remove(first_city)
+	nodes = list(problem.get_nodes())
+	first_city = determine_start(problem)
 
-# Calculating the costs of all possible paths, and storing the mins
-for i in range(2, len(nodes)+1):
+	# Getting the cost of coming back if you are the last one
+	distances = {}
+	paths = {}
 
-	# Making nodes subsets
-	for S in combinations(nodes, i):
+	for v in nodes:
+		dist = calculate_distance(distance_matrix, v, first_city)
+		distances[(frozenset([v]), v)] = dist
 
-		subset = frozenset(S)
+	nodes.remove(first_city)
 
-		for w in subset:
-			distances[(subset, w)] = float(np.inf)
+	# Calculating the costs of all possible paths, and storing the mins
+	for i in range(2, len(nodes)+1):
 
-			for u in subset - {w}:
-				dist = distances[(subset- {w}, u)] + calculate_distance(distance_matrix, u, w)
+		# Making nodes subsets
+		for S in combinations(nodes, i):
 
-				if dist < distances[(subset, w)]:
-					distances[(subset, w)] = dist # Rewriting the best cost from the subset to the current city
-					paths[(subset, w)] = u		  # Writing the best last city from this subset to the current city
+			subset = frozenset(S)
 
-# Getting the smallest cost
-full_set = frozenset(nodes)  # All cities visited, except starting city
-min_cost = float(np.inf)
+			for w in subset:
+				distances[(subset, w)] = float(np.inf)
 
-# Look for the minimum distance to complete the tour
-for w in nodes:
-	cost = distances[(full_set, w)] + calculate_distance(distance_matrix, w, first_city)  # Add cost to return to the start city
-	if cost < min_cost:
-		min_cost = min(min_cost, cost)
-		final_city = w
+				for u in subset - {w}:
+					dist = distances[(subset- {w}, u)] + calculate_distance(distance_matrix, u, w)
 
-# Getting the path
-path = []
-current_city = final_city
-current_subset = full_set
+					if dist < distances[(subset, w)]:
+						distances[(subset, w)] = dist # Rewriting the best cost from the subset to the current city
+						paths[(subset, w)] = u		  # Writing the best last city from this subset to the current city
 
-while (len(path) < len(nodes)-1):
+	# Getting the smallest cost
+	full_set = frozenset(nodes)  # All cities visited, except starting city
+	min_cost = float(np.inf)
+
+	# Look for the minimum distance to complete the tour
+	for w in nodes:
+		cost = distances[(full_set, w)] + calculate_distance(distance_matrix, w, first_city)  # Add cost to return to the start city
+		if cost < min_cost:
+			min_cost = min(min_cost, cost)
+			final_city = w
+
+	# Getting the path
+	path = []
+	current_city = final_city
+	current_subset = full_set
+
+	while (len(path) < len(nodes)-1):
+		path.append(current_city)
+		previous_city = paths[(current_subset, current_city)]  # Get the predecessor
+		current_subset = current_subset - {current_city}
+		current_city = previous_city
+
+	# Add the final city and the start city to close the tour
 	path.append(current_city)
-	previous_city = paths[(current_subset, current_city)]  # Get the predecessor
-	current_subset = current_subset - {current_city}
-	current_city = previous_city
+	path.append(first_city)
+	path.reverse()
 
-# Add the final city and the start city to close the tour
-path.append(current_city)
-path.append(first_city)
-path.reverse()
+	results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
+	results.append([
+		file,
+		opt_solution[file],
+		min_cost,
+		"-".join([str(x) for x in path])
+	])
 
-results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
-results.append([
-	file,
-	opt_solution[file],
-	min_cost,
-	"-".join([str(x) for x in path])
-])
+	return (path, min_cost)
 
 # Save the array to a text file in CSV format
-results = np.array(results)
-np.savetxt(f"TSP_results_{file}.csv", results, delimiter=",", fmt="%s")
+#results = np.array(results)
+#np.savetxt(f"TSP_results_{file}.csv", results, delimiter=",", fmt="%s")
