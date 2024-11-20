@@ -9,8 +9,6 @@ import tsplib95
 import numpy as np
 from itertools import combinations
 
-from tsp_problems import opt_solution
-
 #%% Function Definitions
 
 def create_distance_matrix(problem):
@@ -33,7 +31,7 @@ def create_distance_matrix(problem):
 	return distance_matrix
 
 
-def determine_start(problem):
+def determine_start(nodes):
 
 	"""
 		Function to choose a random node to start the search in
@@ -43,7 +41,7 @@ def determine_start(problem):
 		Output: Node to start with as an index k, used in the distance matrix
 	"""
 
-	n = problem.dimension
+	n = len(nodes)
 
 	starting_node = np.random.randint(0, n+1)
 
@@ -62,23 +60,25 @@ def calculate_distance(distance_matrix, start_node, end_node):
 
 	distance = distance_matrix[start_node - 1][end_node - 1]
 
-	return int(distance)
+	return distance
 
 #%% Execution
 
-# Load a problem
-file = 'burma14'
-problem = tsplib95.load(f'ALL_tsp/{file}.tsp')
-distance_matrix = create_distance_matrix(problem)
+def dynamic_programming(distance_matrix):
 
-params = {'problem': problem}
+	"""Obtains a path and the cost of it for TSP
 
-def dynamic_programming(distance_matrix, params):
+	Inputs
+		- np.array with the distance matrix
+	
+	Output:
+		- Tuple where the first element is the best path, a python list
+		- The second element is the cost of the path, a float
+	
+	"""
 
-	problem = params.get('problem')
-
-	nodes = list(problem.get_nodes())
-	first_city = determine_start(problem)
+	nodes = list(np.arange(distance_matrix.shape[0])+1)
+	first_city = determine_start(nodes)
 
 	# Getting the cost of coming back if you are the last one
 	distances = {}
@@ -135,15 +135,25 @@ def dynamic_programming(distance_matrix, params):
 	path.append(first_city)
 	path.reverse()
 
-	# results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
+	return (path, min_cost)
+
+# Load a problem
+
+#from tsp_problems import opt_solution
+
+# file = 'burma14'
+# problem = tsplib95.load(f'ALL_tsp/{file}.tsp')
+# distance_matrix = create_distance_matrix(problem)
+
+# result = dynamic_programming(distance_matrix)
+
+# results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
 	# results.append([
 	# 	file,
 	# 	opt_solution[file],
-	# 	min_cost,
-	# 	"-".join([str(x) for x in path])
+	# 	result[1],
+	# 	"-".join([str(x) for x in result[0]])
 	# ])
-
-	return (path, min_cost)
 
 # Save the array to a text file in CSV format
 #results = np.array(results)
