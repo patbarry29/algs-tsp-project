@@ -135,13 +135,13 @@ def dynamic_programming(distance_matrix, params):
 	path.append(first_city)
 	path.reverse()
 
-	results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
-	results.append([
-		file,
-		opt_solution[file],
-		min_cost,
-		"-".join([str(x) for x in path])
-	])
+	# results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
+	# results.append([
+	# 	file,
+	# 	opt_solution[file],
+	# 	min_cost,
+	# 	"-".join([str(x) for x in path])
+	# ])
 
 	return (path, min_cost)
 
