@@ -10,6 +10,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
+
+from greedy.greedy import find_min_route
+from utils.cost_examples_comparison import plot_cost_vs_cities
 from create_distance_matrix import create_distance_matrix
 from generate_atsp import generate_atsp
 
@@ -30,16 +33,13 @@ def print_loading_bar(i, total):
     sys.stdout.write(f"\rProgress: [{'#' * int(progress // 2)}{'.' * (50 - int(progress // 2))}] {progress:.2f}%")
     sys.stdout.flush()
 
-def solve_tsp_brute_force(problem):
+def solve_tsp_brute_force(distance_matrix):
     """
     Solve TSP using brute force approach with pre-computed distance matrix.
     """
-    # Create distance matrix
-    distance_matrix = create_distance_matrix(problem)
-
     # Get number of nodes
-    num_nodes = problem.dimension
-    if num_nodes > 15:
+    num_nodes = distance_matrix.shape[0]
+    if num_nodes > 14:
         raise ValueError("It is unfeasible to run brute force on this problem.")
 
     # Use indices for cities (0 to num_nodes-1)
@@ -70,10 +70,8 @@ def solve_tsp_brute_force(problem):
 
     print()
 
-    # Convert indices back to actual node numbers if needed
     if best_tour:
-        nodes = list(problem.get_nodes())
-        best_tour = [nodes[i]+1 for i in best_tour]
+        best_tour = [i+1 for i in best_tour]
 
     return best_tour, round(best_distance,2)
 
@@ -87,6 +85,8 @@ if __name__ == "__main__":
     start = time.time()
     best_tour, best_distance = solve_tsp_brute_force(problem)
     end = time.time()
+
+    plot_cost_vs_cities([solve_tsp_brute_force,find_min_route], ['bf','Greedy'])
 
     # Print results
     print(f"Best tour found: {best_tour}")
