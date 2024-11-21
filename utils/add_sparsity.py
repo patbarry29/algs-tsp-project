@@ -21,8 +21,8 @@ def add_sparsity(distance_matrix, sparsity, symmetric):
     random_mask = np.random.rand(num_nodes, num_nodes) > sparsity
     mask = np.logical_or(mask, np.logical_and(random_mask, np.logical_not(mask)))
 
-    np.fill_diagonal(mask, False)
-
     # 6. Apply the mask to the distance matrix
     sparse_matrix = np.where(mask, distance_matrix, np.max(distance_matrix) ** 3)
+    np.fill_diagonal(sparse_matrix, 0)
+
     return sparse_matrix
