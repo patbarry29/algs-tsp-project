@@ -3,7 +3,7 @@
 # Dynamic Programming Approach
 # Developer: Chelsy Mena
 
-#%% lIBRARY IMPORTS
+#%% LIBRARY IMPORTS
 
 import tsplib95
 import numpy as np
@@ -17,7 +17,6 @@ def create_distance_matrix(problem):
 		Function to create the distance matrix from the TSP problem
 		
 		Input: TSP problem in any of the accepted formats for the tsplib
-		
 		Output: numpy matrix with the edge distances for the problem
     """
 
@@ -37,7 +36,6 @@ def determine_start(nodes):
 		Function to choose a random node to start the search in
 		
 		Input: TSP problem in any of the accepted formats fot the tsp lib
-		
 		Output: Node to start with as an index k, used in the distance matrix
 	"""
 
@@ -54,7 +52,6 @@ def calculate_distance(distance_matrix, start_node, end_node):
 		Function to get the distance between two nodes
 
 		Input: Distance matrix, start and end nodes
-
 		Output: Distance between the two nodes
 	"""
 
@@ -65,15 +62,15 @@ def calculate_distance(distance_matrix, start_node, end_node):
 
 def dynamic_programming(distance_matrix):
 
-	"""Obtains a path and the cost of it for TSP
+	"""
+		Obtains a path and the cost of it for TSP
 
-	Inputs
-		- np.array with the distance matrix
-	
-	Output:
-		- Tuple where the first element is the best path, a python list
-		- The second element is the cost of the path, a float
-	
+		Inputs
+			- np.array with the distance matrix
+		
+		Output:
+			- Tuple where the first element is the best path, a python list
+			- The second element is the cost of the path, a float
 	"""
 
 	nodes = list(np.arange(distance_matrix.shape[0])+1)

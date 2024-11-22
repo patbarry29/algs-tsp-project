@@ -25,15 +25,12 @@ erick.gary.gomez.soto@univ-st-etienne.fr
 	- [x] Get cost of chosen path
 	- [x] Get chosen path
 	- [x] Test with other type of problems
-- [ ] Randomized Approach
-	- [ ] Understand the papers maybe
-	- [ ] MST
-	- [ ] Perfect matching
-	- [ ] Graph combination
-	- [ ] Eulerian Tour
-	- [ ] TSP
+- [x] Randomized Approach
+	- [x] Understand the papers maybe
+	- [x] MCMC
 - [x] Graph Generator
 - [ ] GUI
+- [ ] Report
 
 ## Links 
 [TSPLIB](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/index.html)

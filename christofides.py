@@ -1,6 +1,6 @@
 # %%
 # Traveling Salesman Problem
-# Randomised Approach
+# Randomised Approach - Not really, was going to be Cristofides
 # Developer: Chelsy Mena
 
 #%% LIBRARY IMPORTS
@@ -8,7 +8,6 @@
 import tsplib95
 import numpy as np
 from itertools import product, combinations
-
 from utils import create_distance_matrix, determine_start, calculate_distance, plot_graph
 
 from tsp_problems import opt_solution
@@ -54,23 +53,6 @@ for i in range(len(nodes)):
 
 plot_graph(mst_matrix)
 #%% PERFECT MATCHING FOR THE NODES WITH ODD EDGES
-
-odd_edges = []
-for i in range(len(mst_matrix)):
-	row = mst_matrix[i]
-	sum = 0
-	for j in row:
-		if j != 0:
-			sum += 1
-	if sum %2 != 0:
-		odd_edges.append(i+1)
-
-for pair in combinations(odd_edges, 2):
-	if pair[0] == pair[1]:
-		continue
-	else:
-		WAIT NO
-		
 
 # %% ADDING UP THE TWO GRAPHS
 		
