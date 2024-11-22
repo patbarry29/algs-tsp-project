@@ -1,5 +1,12 @@
 import tsplib95
 from collections import defaultdict
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
 from create_distance_matrix import create_distance_matrix
 from utils.cost_examples_comparison import plot_cost_vs_cities
 from utils.performance import compute_cpu_usage
