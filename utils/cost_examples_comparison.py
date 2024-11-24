@@ -16,17 +16,16 @@ from brute_force.brute_force import brute_force
 from greedy.greedy import find_min_route
 
 # Input: A function that solves the TSP problem (this function should return the route and total cost)
-def plot_cost_vs_cities(tsp_solvers, solver_names):
+def plot_cost_vs_cities(tsp_solvers, solver_names, problem_sizes):
     if len(tsp_solvers) != len(solver_names):
         raise ValueError("Number of solvers must match number of solver names")
 
     np.random.seed(np.random.randint(10))
-    num_cities_list = list(range(3,11,1))
     avg_costs_per_solver = []
 
-    for num_cities in num_cities_list:
+    for num_cities in problem_sizes:
         # For first iteration, initialize the lists
-        if num_cities == num_cities_list[0]:
+        if num_cities == problem_sizes[0]:
             avg_costs_per_solver = [[] for _ in range(len(tsp_solvers))]
 
         for _ in range(10):  # Create 10 random problems for each number of cities
@@ -47,8 +46,12 @@ def plot_cost_vs_cities(tsp_solvers, solver_names):
 
     # Plot the results
     plt.figure(figsize=(10, 6))
+    markers = ['o', 's', '^', 'd', '*']  # Add more markers if needed
+    colors = plt.cm.tab10.colors  # Use a colormap for distinct colors
     for i, avg_costs in enumerate(avg_costs_per_solver):
-        plt.plot(num_cities_list, avg_costs, marker="o", linestyle="-", label=solver_names[i])
+        jittered_x = [x + i*(0.02) for x in problem_sizes]
+        plt.plot(jittered_x, avg_costs, marker=markers[i % len(markers)],
+                color=colors[i % len(colors)], linestyle="-", label=solver_names[i])
 
     plt.xlabel("Number of Cities")
     plt.ylabel("Average Total Cost")
@@ -66,4 +69,7 @@ def plot_cost_vs_cities(tsp_solvers, solver_names):
 
 
 if __name__ == '__main__':
-    plot_cost_vs_cities([ant_colony, find_min_route, brute_force], ['ACO', 'Greedy', 'BF'])
+    algorithms = [ant_colony, find_min_route, brute_force]
+    algorithms_names = ['ACO', 'Greedy', 'BF']
+    problem_sizes = list(range(3,8,1))
+    plot_cost_vs_cities(algorithms, algorithms_names, problem_sizes)
