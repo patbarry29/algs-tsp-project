@@ -148,7 +148,7 @@ problem = tsplib95.load(f'random_atsp.atsp')
 distance_matrix = create_distance_matrix(problem)
 result = dynamic_programming(distance_matrix)
 
-print(result)
+print(result) ##
 # results = [["Problem", "Opt Cost Theory", "Opt Cost DP", "Chosen Path"]]
 	# results.append([
 	# 	file,

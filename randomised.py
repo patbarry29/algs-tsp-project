@@ -150,4 +150,4 @@ results_tuple, results = randomized(distance_matrix)
 plt.plot(range(len(results)), results)
 plt.title(f'p size = {len(distance_matrix)}, Cost = {results_tuple[1]}')
 plt.ylabel("Cost")
-plt.xlabel("Iterations");
+plt.xlabel("Iterations");##
