@@ -11,10 +11,7 @@ parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
 
-from greedy.greedy import find_min_route
-from utils.cost_examples_comparison import plot_cost_vs_cities
-from create_distance_matrix import create_distance_matrix
-from generate_atsp import generate_atsp
+from utils.create_distance_matrix import create_distance_matrix
 
 def calculate_tour_distance(tour, distance_matrix):
     """
@@ -33,7 +30,7 @@ def print_loading_bar(i, total):
     sys.stdout.write(f"\rProgress: [{'#' * int(progress // 2)}{'.' * (50 - int(progress // 2))}] {progress:.2f}%")
     sys.stdout.flush()
 
-def solve_tsp_brute_force(distance_matrix):
+def brute_force(distance_matrix):
     """
     Solve TSP using brute force approach with pre-computed distance matrix.
     """
@@ -77,16 +74,16 @@ def solve_tsp_brute_force(distance_matrix):
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
-    generate_atsp(n=5, dim_size=10, sparsity=0.2)
-    problem = tsplib95.load('random_tsp.tsp')
-    # problem = tsplib95.load('random_atsp.atsp')
+    # generate_atsp(n=5, dim_size=10, sparsity=0.2)
+    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
+    # problem = tsplib95.load('data/random/atsp/random_atsp.atsp')
+
+    distance_matrix = create_distance_matrix(problem)
 
     # Solve the problem
     start = time.time()
-    best_tour, best_distance = solve_tsp_brute_force(problem)
+    best_tour, best_distance = brute_force(distance_matrix)
     end = time.time()
-
-    plot_cost_vs_cities([solve_tsp_brute_force,find_min_route], ['bf','Greedy'])
 
     # Print results
     print(f"Best tour found: {best_tour}")

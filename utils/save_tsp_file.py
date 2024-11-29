@@ -1,3 +1,5 @@
+import os
+
 def save_matrix_file(cities=None, matrix=None, filename="random_tsp.tsp", type="TSP", is_symmetric=True):
     """
     Saves a matrix (distance or cost matrix) to a TSP or ATSP format file.
@@ -9,7 +11,18 @@ def save_matrix_file(cities=None, matrix=None, filename="random_tsp.tsp", type="
       type: The type of problem ("TSP" or "ATSP").
       is_symmetric: True if the matrix is symmetric (TSP), False otherwise (ATSP).
     """
-    with open(filename, "w") as f:
+    directory = f"./data/random/{type.lower()}"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    filepath = os.path.join(directory, filename)
+    print()
+    print(f"cities: {cities}")
+    print(f"matrix: {matrix}")
+    print(f"filename: {filename}")
+    print(f"type: {type}")
+    print(f"is_symmetric: {is_symmetric}")
+    print(f"filepath: {filepath}")
+    with open(filepath, "w") as f:
         # Write the header
         f.write(f"NAME : Random_{type}_Instance\n")
         f.write(f"TYPE : {type}\n")
