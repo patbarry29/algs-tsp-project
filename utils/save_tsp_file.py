@@ -15,13 +15,6 @@ def save_matrix_file(cities=None, matrix=None, filename="random_tsp.tsp", type="
     if not os.path.exists(directory):
         os.makedirs(directory)
     filepath = os.path.join(directory, filename)
-    print()
-    print(f"cities: {cities}")
-    print(f"matrix: {matrix}")
-    print(f"filename: {filename}")
-    print(f"type: {type}")
-    print(f"is_symmetric: {is_symmetric}")
-    print(f"filepath: {filepath}")
     with open(filepath, "w") as f:
         # Write the header
         f.write(f"NAME : Random_{type}_Instance\n")
