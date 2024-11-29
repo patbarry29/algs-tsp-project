@@ -65,7 +65,7 @@ def route_distance(distance_matrix, route):
 
 	return dist_route
 
-def randomized(distance_matrix):
+def randomised(distance_matrix):
 
 	"""
 		Obtains a path and the cost of it for TSP
@@ -140,14 +140,14 @@ def randomized(distance_matrix):
 
 	return (route, dist_best), results
 #%% Execution Example
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-problem = tsplib95.load(r'data\ALL_tsp\burma14.tsp')
-distance_matrix = create_distance_matrix(problem)
+# problem = tsplib95.load(r'data\ALL_tsp\burma14.tsp')
+# distance_matrix = create_distance_matrix(problem)
 
-results_tuple, results = randomized(distance_matrix)
+# results_tuple, results = randomized(distance_matrix)
 
-plt.plot(range(len(results)), results)
-plt.title(f'p size = {len(distance_matrix)}, Cost = {results_tuple[1]}')
-plt.ylabel("Cost")
-plt.xlabel("Iterations");##
+# plt.plot(range(len(results)), results)
+# plt.title(f'p size = {len(distance_matrix)}, Cost = {results_tuple[1]}')
+# plt.ylabel("Cost")
+# plt.xlabel("Iterations");##
