@@ -1,7 +1,15 @@
+# IMPORTS
 import numpy as np
-from save_tsp_file import save_matrix_file
+
+import os
+import sys
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, project_root)
 from utils.add_sparsity import add_sparsity
 from utils.random_edge_weights import generate_random_weights, generate_weight_distribution
+from utils.save_tsp_file import save_matrix_file
+
+
 
 def generate_tsp(n, dim_size=100, sparsity=0, random_weights=False, weight_dist=None, int_coords=False):
     """
@@ -34,4 +42,4 @@ def generate_tsp(n, dim_size=100, sparsity=0, random_weights=False, weight_dist=
     return cities
 
 if __name__ == "__main__":
-  	cities = generate_tsp(n=5, dim_size=10, int_coords=True)
+  	cities = generate_tsp(n=5, dim_size=10, int_coords=True, sparsity=0.4)
