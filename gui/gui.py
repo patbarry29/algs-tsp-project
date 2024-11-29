@@ -1,5 +1,11 @@
 #%%
 import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
 from PyQt5.QtWidgets import (
 	QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
 	QLabel, QLineEdit, QComboBox, QSlider, QPushButton
@@ -12,9 +18,12 @@ from PyQt5.QtGui import QIcon
 
 import plotly.graph_objects as go
 import networkx as nx
+import tsplib95
 
-from ..utils.generate_tsp import generate_tsp
-from ..Randomised.randomised import randomised
+from utils.create_distance_matrix import create_distance_matrix
+from utils.generate_tsp import generate_tsp
+from randomised.randomised import randomised
+from dynamic_programming.dynamic_programming import dynamic_programming
 
 #%%
 
@@ -24,7 +33,7 @@ class MainWindow(QMainWindow):
 
 		self.setWindowTitle("TSP Problem Solver")
 		self.setGeometry(100, 100, 1000, 600)
-		self.setWindowIcon(QIcon("icon_use.png"))
+		self.setWindowIcon(QIcon(f"{current_dir}\\icon_use.png"))
 
 		# Main layout
 		main_layout = QHBoxLayout()
@@ -37,7 +46,7 @@ class MainWindow(QMainWindow):
 
 		# Banner
 		image_label = QLabel()
-		image_label.setPixmap(QPixmap("banner.png").scaled(250, 250, Qt.KeepAspectRatio))
+		image_label.setPixmap(QPixmap(f"{current_dir}\\banner.png").scaled(225, 225, Qt.KeepAspectRatio))
 		left_layout.addWidget(image_label)
 
 		# Integer input
@@ -52,7 +61,7 @@ class MainWindow(QMainWindow):
 		self.slider.setMaximum(100)
 		self.slider.setValue(50)
 		self.slider_label = QLabel("How connected is your map?")
-		self.slider.valueChanged.connect(lambda: self.slider_label.setText(f"{self.slider.value()}%"))
+		self.slider.valueChanged.connect(lambda: self.slider_label.setText(f"{self.slider.value()}% Connected"))
 		left_layout.addWidget(self.slider_label)
 		left_layout.addWidget(self.slider)
 
@@ -63,7 +72,7 @@ class MainWindow(QMainWindow):
 			"Branch and Bound",
 			"Brute Force",
 			"Dynamic Programming",
-			"Genetic Approach"
+			"Genetic Approach",
 			"Greedy",
 			"Randomised"
 			])
@@ -83,7 +92,9 @@ class MainWindow(QMainWindow):
 		# Right panel (3/4) - Plotly graph
 		self.web_view = QWebEngineView()
 		self.update_graph()
+		self.web_view.setStyleSheet("border-radius: 20px;")
 		main_layout.addWidget(self.web_view)
+		
 
 		# Set main layout
 		container = QWidget()
@@ -91,24 +102,40 @@ class MainWindow(QMainWindow):
 		self.setCentralWidget(container)
 
 	def update_graph(self):
+
 		"""Updates the Plotly graph and loads it in the WebEngineView."""
-		fig = go.Figure(data=[
-			go.Scatter(x=[1, 2, 3], y=[10, 20, 30], mode="lines+markers", name="Example Line")
-		])
-		fig.update_layout(title="Plotly Graph", height=600, width=750)
+
+		fig = go.Figure()
+		fig.add_annotation(
+			text="Welcome to the Traveling Salesman Problem Solver!",
+			showarrow=False,
+			font=dict(size=24, color="#290a59"),
+			xref="paper", yref="paper",
+			x=0.5, y=0.5,
+			align="center"
+		)
+
+		# Remove axes, gridlines, and background for a clean look
+		fig.update_layout(
+			xaxis_visible=False,
+			yaxis_visible=False,
+			plot_bgcolor="white",
+			paper_bgcolor="white",
+			margin=dict(t=0, b=0, l=0, r=0)  # Minimize margins
+		)
 
 		# Save the graph as an HTML file and load it into the QWebEngineView
-		html_path = "graph.html"
-		fig.write_html(html_path)
-		self.web_view.load(QUrl.fromLocalFile(fr"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\graph.html"))
+		fig.write_html(f"{current_dir}\\graph.html")
+		self.web_view.load(QUrl.fromLocalFile(f"{current_dir}\\graph.html"))
 
 	def on_run_button_clicked(self):
 
 		"""Handles the button click, collects input values, and updates the graph."""
 
 		algos = {
-			"Randomised": randomised
-		}
+			"Randomised": randomised,
+			"Dynamic Programming": dynamic_programming
+			}
 
 		try:
 			n_cities = int(self.int_input.text())
@@ -116,11 +143,11 @@ class MainWindow(QMainWindow):
 			sparsity = self.slider.value()
 
 			# Generate problem and Run Algorithm
-			cities = generate_tsp(
-				n=n_cities,
-				sparsity=sparsity)
+			cities = generate_tsp(n=n_cities,sparsity=sparsity) #these are coodinates
+			problem = tsplib95.load(f"{parent_dir}\\data\\random\\tsp\\random_tsp.tsp")
+			dist_matrix = create_distance_matrix(problem)
 
-			algo_solve, _ = algos[algorithm](cities)
+			algo_solve = algos[algorithm](dist_matrix)
 			route = algo_solve[0]
 			cost = algo_solve[1]
 
@@ -129,27 +156,31 @@ class MainWindow(QMainWindow):
 			#cities = create_distance_matrix(tsplib95.load(r'burma14.tsp'))
 
 			# Add edges with weights from the matrix
-			num_nodes = len(cities)
+			num_nodes = len(dist_matrix)
 			for i in range(num_nodes):
 				for j in range(num_nodes):
-					if cities[i, j] > 0:
-						G.add_edge(i + 1, j + 1, weight=cities[i, j])
-			# Initialize random positions
-			pos = nx.spring_layout(G)
+					if dist_matrix[i, j] > 0:
+						G.add_edge(i + 1, j + 1, weight=dist_matrix[i, j])
+
+			# Sse the generated problem if they're coordinates, else Initialize random positions if needed 
+			if cities.shape[1] == 2:
+				pos = cities.copy()
+			else:
+				pos = nx.spring_layout(G)
 
 			# Plot
 			node_x = []
 			node_y = []
 			for node in G.nodes():
-				x, y = pos[node]
+				x, y = pos[node-1]
 				node_x.append(x)
 				node_y.append(y)
 
 			edge_x = []
 			edge_y = []
 			for edge in G.edges():
-				x0, y0 = pos[edge[0]]
-				x1, y1 = pos[edge[1]]
+				x0, y0 = pos[edge[0]-1]
+				x1, y1 = pos[edge[1]-1]
 				edge_x.append(x0)
 				edge_x.append(x1)
 				edge_x.append(None)
@@ -157,15 +188,15 @@ class MainWindow(QMainWindow):
 				edge_y.append(y1)
 				edge_y.append(None)
 
-			edges_route = []
+			edges_route = [(route[-1], route[0])]
 			for i in range(len(route)-1):
 				edges_route.append((int(route[i]), int(route[i+1])))
 
 			edge_x_path = []
 			edge_y_path = []
 			for edge in edges_route:
-				x0, y0 = pos[edge[0]]
-				x1, y1 = pos[edge[1]]
+				x0, y0 = pos[edge[0]-1]
+				x1, y1 = pos[edge[1]-1]
 				edge_x_path.append(x0)
 				edge_x_path.append(x1)
 				edge_x_path.append(None)
@@ -191,7 +222,7 @@ class MainWindow(QMainWindow):
 				mode='markers',
 				hoverinfo='text',
 				marker=dict(
-					size=12, line_width=1, color="#290a59")
+					size=15, line_width=0, color="#290a59")
 					)
 
 			fig = go.Figure(
@@ -200,7 +231,7 @@ class MainWindow(QMainWindow):
 					hovermode='closest',
 					margin=dict(b=10,l=5,r=5,t=10),
 					annotations=[dict(
-					text=f"Cost of the path: {cost}",
+					text=f"Cost of the Route: {cost}",
 					showarrow=False,
 					xref="paper", yref="paper",
 					x=0.005, y=-0.002)],
@@ -208,10 +239,13 @@ class MainWindow(QMainWindow):
 					yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
 							))
 
-			fig.update_layout(height=550, width=700, showlegend=False)
-			fig.write_html("graph.html")
+			fig.update_layout(
+				height=550, width=700, showlegend=False, 
+				plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)"
+				)
+			fig.write_html(f"{current_dir}\\graph.html")
 
-			self.web_view.load(QUrl.fromLocalFile(fr"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\graph.html"))
+			self.web_view.load(QUrl.fromLocalFile(f"{current_dir}\\graph.html"))
 
 		except ValueError:
 			print("Please enter a valid integer!")
