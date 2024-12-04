@@ -1,0 +1,14 @@
+*.py[cod]
+__pycache__/
+*$py.class
+
+.DS_Store
+.vscode/
+
+.ipynb_checkpoints
+.idea/
+
+*.pyc
+
+random_tsp.tsp
+random_atsp.atsp
