@@ -19,25 +19,6 @@ from utils.create_distance_matrix import create_distance_matrix
 
 #%% FUNCTION DEFINITIONS
 
-# def create_distance_matrix(problem):
-    
-# 	"""
-# 		Function to create the distance matrix from the TSP problem
-		
-# 		Input: TSP problem in any of the accepted formats for the tsplib
-# 		Output: numpy matrix with the edge distances for the problem
-#     """
-
-# 	nodes = list(problem.get_nodes())
-# 	n = problem.dimension
-# 	distance_matrix = np.zeros((n, n), dtype=int)
-# 	for i in range(n):
-# 		for j in range(n):
-# 			if i != j:
-# 				distance_matrix[i][j] = problem.get_weight(nodes[i], nodes[j])
-# 	return distance_matrix
-
-
 def determine_start(nodes):
 
 	"""
@@ -107,7 +88,7 @@ def dynamic_programming(distance_matrix):
 				distances[(subset, w)] = float(np.inf)
 
 				for u in subset - {w}:
-					dist = distances[(subset- {w}, u)] + calculate_distance(distance_matrix, u, w)
+					dist = distances[(subset-{w}, u)] + calculate_distance(distance_matrix, u, w)
 
 					if dist < distances[(subset, w)]:
 						distances[(subset, w)] = dist # Rewriting the best cost from the subset to the current city
