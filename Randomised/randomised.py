@@ -4,29 +4,18 @@
 # Developer: Chelsy Mena
 
 #%% LIBRARY IMPORTS
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
 
 import tsplib95
 import numpy as np
+from utils.create_distance_matrix import create_distance_matrix
 
 # FUNCTION DEFINITIONS
-
-def create_distance_matrix(problem):
-    
-	"""
-		Function to create the distance matrix from the TSP problem
-		
-		Input: TSP problem in any of the accepted formats for the tsplib
-		Output: numpy matrix with the edge distances for the problem
-    """
-
-	nodes = list(problem.get_nodes())
-	n = problem.dimension
-	distance_matrix = np.zeros((n, n), dtype=int)
-	for i in range(n):
-		for j in range(n):
-			if i != j:
-				distance_matrix[i][j] = problem.get_weight(nodes[i], nodes[j])
-	return distance_matrix
 
 def calculate_distance(distance_matrix, start_node, end_node):
 
@@ -65,7 +54,7 @@ def route_distance(distance_matrix, route):
 
 	return dist_route
 
-def randomized(distance_matrix):
+def randomised(distance_matrix):
 
 	"""
 		Obtains a path and the cost of it for TSP
@@ -138,16 +127,16 @@ def randomized(distance_matrix):
 			T *= 1.1
 			print(f"I'm in iteration {i}, don't kill me. I have kids.")
 
-	return (route, dist_best), results
+	return (route, dist_best)
 #%% Execution Example
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-problem = tsplib95.load(r'data\ALL_tsp\burma14.tsp')
-distance_matrix = create_distance_matrix(problem)
+# problem = tsplib95.load(r'data\ALL_tsp\burma14.tsp')
+# distance_matrix = create_distance_matrix(problem)
 
-results_tuple, results = randomized(distance_matrix)
+# results_tuple, results = randomized(distance_matrix)
 
-plt.plot(range(len(results)), results)
-plt.title(f'p size = {len(distance_matrix)}, Cost = {results_tuple[1]}')
-plt.ylabel("Cost")
-plt.xlabel("Iterations");##
+# plt.plot(range(len(results)), results)
+# plt.title(f'p size = {len(distance_matrix)}, Cost = {results_tuple[1]}')
+# plt.ylabel("Cost")
+# plt.xlabel("Iterations");##
