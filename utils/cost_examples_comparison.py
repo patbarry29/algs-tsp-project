@@ -14,7 +14,7 @@ from utils.generate_tsp import generate_tsp
 from Randomised.randomised import randomized
 from ant_colony.ant_colony import ant_colony
 from brute_force.brute_force import brute_force
-from greedy.greedy import find_min_route
+from greedy.greedy import greedy
 
 
 
@@ -72,7 +72,7 @@ def plot_cost_vs_cities(tsp_solvers, solver_names, problem_sizes):
 
 
 if __name__ == '__main__':
-    algorithms = [ant_colony, find_min_route, randomized]
+    algorithms = [ant_colony, greedy(), randomized]
     # np.random.seed(1)
     algorithms_names = ['ACO', 'Greedy', 'Randomised']
     problem_sizes = list(range(10,101,10))

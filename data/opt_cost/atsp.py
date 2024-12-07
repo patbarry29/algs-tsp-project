@@ -1,16 +1,14 @@
-# Data of TSP optimal solutions
+# Data of ATSP optimal solutions
 
 data = {
     "Instance": [
         "br17", "ft53", "ft70", "ftv33", "ftv35", "ftv38", "ftv44", "ftv47",
-        "ftv55", "ftv64", "ftv70", "ftv90", "ftv100", "ftv110", "ftv120",
-        "ftv130", "ftv140", "ftv150", "ftv160", "ftv170", "kro124", "p43",
+        "ftv55", "ftv64", "ftv70", "ftv170", "p43",
         "rbg323", "rbg358", "rbg403", "rbg443", "ry48p"
     ],
     "OptimalCost": [
         39, 6905, 38673, 1286, 1473, 1530, 1613, 1776,
-        1608, 1839, 1950, 1579, 1788, 1958, 2166,
-        2307, 2420, 2611, 2683, 2755, 36230, 5620,
+        1608, 1839, 1950, 2755, 5620,
         1326, 1163, 2465, 2720, 14422
     ]
 }

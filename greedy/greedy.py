@@ -1,20 +1,8 @@
+import time
+
 import tsplib95
 from collections import defaultdict
-import sys
-import os
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
-sys.path.append(parent_dir)
-
-from create_distance_matrix import create_distance_matrix
-from utils.cost_examples_comparison import plot_cost_vs_cities
-from utils.memory_examples_comparison import plot_cost_vs_cities_with_memory
-from utils.performance import compute_cpu_usage
-from utils.get_opt_cost import get_optimal_cost
-from data.opt_cost import tsp as opt_sol
-from utils.time_examples_comparison import plot_time_vs_cities
-
+from utils.create_distance_matrix import create_distance_matrix
 
 # Adapted from https://www.geeksforgeeks.org/travelling-salesman-problem-greedy-approach/
 # Function to find the minimum cost path for all paths using a greedy approach
@@ -65,42 +53,20 @@ def greedy(tsp_matrix):
 
 # Driver Code
 if __name__ == "__main__":
-    # data = "br17"
-    data = None
-    # Load the problem instance using TSPLIB
-    # problem = tsplib95.load(f'../data/ALL_atsp/{data}.atsp')
-    problem = tsplib95.load('../random_tsp.tsp')
+    data = "br17"
+    # data = None
+    problem = tsplib95.load(f'../data/ALL_atsp/{data}.atsp')
+    # problem = tsplib95.load('../random_tsp.tsp')
 
-    # Generate the distance matrix
     distance_matrix = create_distance_matrix(problem)
-    print("Distance Matrix:")
-    print(distance_matrix)
+    # print(f"Distance Matrix: \n {distance_matrix}")
 
-    # Measure CPU usage and execution time
-    result, running_time, cpu_usage = compute_cpu_usage(greedy, distance_matrix)
+    start_time = time.time()
+    route, total_cost = greedy(distance_matrix)
+    running_time = time.time() - start_time
 
-    # Extract results
-    route, total_cost = result
-
-    # Output the solution
     print("Sequence:", route)
     print("Cost:", total_cost)
-
     print(f"Running time: {running_time:.6f} seconds")
-    print(f"CPU Usage: {cpu_usage:.4f}%")
 
-    # Add TSPLIB optimal solutions for comparison if known
-    optimal_cost = get_optimal_cost(opt_sol.data, data)
-    if optimal_cost is not None:
-        relative_error = (total_cost - optimal_cost) / optimal_cost * 100
-        print(f"Optimal Cost: {optimal_cost}")
-        print(f"Relative Error: {relative_error:.2f}%")
 
-    # Plot the cost vs. number of cities
-    # plot_cost_vs_cities(greedy)
-
-    # Plot the cost vs. number of cities with memory usage
-    # plot_cost_vs_cities_with_memory(greedy)
-
-    # Plot the time vs. number of cities
-    plot_time_vs_cities(greedy)

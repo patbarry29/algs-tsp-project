@@ -6,7 +6,7 @@ import numpy as np
 import tsplib95
 from utils.get_opt_cost import get_optimal_cost
 from data.opt_cost import tsp as opt_sol
-from create_distance_matrix import create_distance_matrix
+from utils.create_distance_matrix import create_distance_matrix
 import optuna
 import plotly
 import sklearn
