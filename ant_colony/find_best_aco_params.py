@@ -4,8 +4,8 @@ import time
 import pandas as pd
 import matplotlib.pyplot as plt
 from ant_colony import ant_colony
-from generate_tsp import generate_tsp
-from create_distance_matrix import create_distance_matrix
+from utils.generate_tsp import generate_tsp
+from utils.create_distance_matrix import create_distance_matrix
 
 def test_parameter_values(param_name, param_values, problem_sizes, num_problems_per_size):
     """Test different values for a specified parameter."""
@@ -35,7 +35,7 @@ def test_parameter_values(param_name, param_values, problem_sizes, num_problems_
             for problem_num in range(num_problems_per_size):
                 # Generate and solve problem
                 generate_tsp(n=size)
-                problem = tsplib95.load('random_tsp.tsp')
+                problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
                 distance_matrix = create_distance_matrix(problem)
 
                 start_time = time.time()

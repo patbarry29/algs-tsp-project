@@ -1,0 +1,62 @@
+parameters to tune
+- number of ants
+- alpha
+    - `alpha = 1` is best
+        - `alpha = 0.5` vs `alpha = 2`
+            - `alpha = 0.5` won 15/100 times
+            - `alpha = 2` won 75/100 times
+        - `alpha = 1` vs `alpha = 1.5`
+            - `alpha = 1` won 58/100 times
+            - `alpha = 1.5` won 28/100 times
+        - `alpha = 1` vs `alpha = 2`
+            - `alpha = 1` won 63/100 times
+            - `alpha = 2` won 24/100 times
+- beta
+    - `beta = 3` is the best value
+        - `beta = 1` vs `beta = 2`
+            - `beta = 2` won 86/100 times
+            - `beta = 1` won 2/100 times
+        - `beta = 3` vs `beta = 4`
+            - `beta = 3` won 43/100 times
+            - `beta = 4` won 41/100 times
+        - `beta = 1.5` vs `beta = 2.5`
+            - `beta = 2.5` won 77/100 times
+            - `beta = 1.5` won 8/100 times
+        - `beta = 3.5` vs `beta = 4.5`
+            - `beta = 4.5` won 44/100 times
+            - `beta = 3.5` won 34/100 times
+        - `beta = 2` vs `beta = 3`
+            - `beta = 3` won 66/100 times
+            - `beta = 2` won 19/100 times
+        - `beta = 2.5` vs `beta = 4.5`
+            - `beta = 4.5` won 51/100 times
+            - `beta = 2.5` won 37/100 times
+        - `beta = 3` vs `beta = 4.5`
+            - `beta = 3` won 42/100 times
+            - `beta = 4.5` won 41/100 times
+
+- number of iterations
+    - `num = 350` is the best value. the higher the number of iterations the better.
+        - `num = 10` vs `num = 350`
+            - `num = 10` won 1/100 times
+            - `num = 350` won 91/100 times
+        - `num = 50` vs `num = 300`
+            - `num = 50` won 12/100 times
+            - `num = 300` won 73/100 times
+        - `num = 100` vs `num = 250`
+            - `num = 100` won 23/100 times
+            - `num = 250` won 64/100 times
+        - `num = 150` vs `num = 200`
+            - `num = 150` won 40/100 times
+            - `num = 200` won 43/100 times
+        - `num = 350` vs `num = 250`
+            - `num = 350` won 52/100 times
+            - `num = 250` won 33/100 times
+- initial pheromone level
+    - the value doesnt seem to have much effect on the result
+- pheromone evaporation rate
+    - the value doesnt seem to have much effect on the result
+- number of ants
+    - the value doesnt seem to have much effect on the result
+    - but it does have an effect on the time
+        - so we will go for a smaller number of ants (around 50)
