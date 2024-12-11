@@ -20,11 +20,11 @@ class Node:
         self.cost = 0  # The cost of this node
         self.vertex = j  # Current city vertex
         self.level = level  # Level (or depth) in the search tree
-        
+
         # Add this edge to the path
         if level != 0:
             self.path.append((i, j))
-        
+
         # Change the row i and column j to INF to avoid revisiting
         if level != 0:
             for k in range(N):
@@ -100,7 +100,7 @@ def solve(CostGraphMatrix):
         # If all the cities have been visited, complete the tour
         if min.level == N - 1:
             min.path.append((i, 0))  # Return to the start city
-            printPath(min.path)  # Print the path taken
+            # printPath(min.path)  # Print the path taken
             return min.cost
 
         # Generate all the children of the current node
@@ -111,7 +111,7 @@ def solve(CostGraphMatrix):
                 child.cost = min.cost + edge_cost + calculateCost(child.reducedMatrix)
 
                 # Print edge selection and cost
-                print(f"Edge selected: {i + 1} -> {j + 1}, Cost: {edge_cost}")
+                # print(f"Edge selected: {i + 1} -> {j + 1}, Cost: {edge_cost}")
 
                 pq.put((child.cost, child))
 
