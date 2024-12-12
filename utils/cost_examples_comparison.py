@@ -11,7 +11,7 @@ sys.path.append(parent_dir)
 from utils.create_distance_matrix import create_distance_matrix
 from utils.generate_tsp import generate_tsp
 
-from Randomised.randomised import randomized
+from randomized.randomized import randomized
 from ant_colony.ant_colony import ant_colony
 from brute_force.brute_force import brute_force
 from greedy.greedy import find_min_route
