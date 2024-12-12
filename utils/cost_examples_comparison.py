@@ -74,6 +74,6 @@ def plot_cost_vs_cities(tsp_solvers, solver_names, problem_sizes):
 if __name__ == '__main__':
     algorithms = [ant_colony, find_min_route, randomized]
     # np.random.seed(1)
-    algorithms_names = ['ACO', 'Greedy', 'Randomised']
+    algorithms_names = ['ACO', 'Greedy', 'Randomized']
     problem_sizes = list(range(10,101,10))
     plot_cost_vs_cities(algorithms, algorithms_names, problem_sizes)
