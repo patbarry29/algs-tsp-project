@@ -18,16 +18,18 @@ from PyQt5.QtGui import QIcon
 
 from pyvis.network import Network
 import tsplib95
+import numpy as np
 
 from utils.create_distance_matrix import create_distance_matrix
 from utils.generate_tsp import generate_tsp
+from opt_solutions import opt_solutions
 
-# from ant_colony.ant_colony import ant_colony
-# from brute_force.brute_force import brute_force
-# from branch_and_bound.branch_and_bound import branch_and_bound
-# from genetic.genetic import genetic
-# from greedy.greedy import greedy
-# from lin_kernighan.lin_kernighan import lin_kernighan
+from ant_colony.ant_colony import ant_colony
+from brute_force.brute_force import brute_force
+from branch_and_bound.branch_and_bound import branch_and_bound
+from genetic.genetic import genetic
+from greedy.greedy import greedy
+from lin_kernighan.lin_kernighan import lin_kernighan
 #from branch_and_bound.reduction_matrix_edge_selection import solve?
 from randomized.randomized import randomized
 from dynamic_programming.dynamic_programming import dynamic_programming
@@ -63,38 +65,12 @@ class MainWindow(QMainWindow):
 
 		# Dropdown with known problems
 		self.dropdown_problems = QComboBox()
-		self.dropdown_problems.addItems([
-			 "a280.tsp", "ali535.tsp","att48.tsp","att532.tsp","bayg29.tsp","bays29.tsp","berlin52.tsp","bier127.tsp","brazil58.tsp","brd14051.tsp","brg180.tsp","burma14.tsp", "ch130.tsp", "ch150.tsp", "d198.tsp", "d493.tsp", "d657.tsp", "d1291.tsp", 
-    "d1655.tsp", "d2103.tsp", "d18512.tsp", "dantzig42.tsp", "dsj1000.tsp", 
-    "eil51.tsp", "eil76.tsp", "eil101.tsp", "fl1400.tsp", "fl1577.tsp", 
-    "fl3795.tsp", "fnl4461.tsp", "fri26.tsp", "gil262.tsp", "gr17.tsp", 
-    "gr21.tsp", "gr24.tsp", "gr48.tsp", "gr96.tsp", "gr120.tsp", 
-    "gr137.tsp", "gr202.tsp", "gr229.tsp", "gr431.tsp", "gr666.tsp", 
-    "hk48.tsp", "kroA100.tsp", "kroA150.tsp", "kroA200.tsp", "kroB100.tsp", 
-    "kroB150.tsp", "kroB200.tsp", "kroC100.tsp", "kroD100.tsp", "kroE100.tsp", 
-    "lin105.tsp", "lin318.tsp", "nrw1379.tsp", "p654.tsp", "pa561.tsp", 
-    "pa561.tsp", "pcb442.tsp", "pcb1173.tsp", "pcb3038.tsp", "pla7397.tsp", 
-    "pla33810.tsp", "pla85900.tsp", "pr76.tsp", "pr107.tsp", "pr124.tsp", 
-    "pr136.tsp", "pr144.tsp", "pr152.tsp", "pr226.tsp", "pr264.tsp", 
-    "pr299.tsp", "pr439.tsp", "pr1002.tsp", "pr2392.tsp", "rat99.tsp", 
-    "rat195.tsp", "rat575.tsp", "rat783.tsp", "rd100.tsp", "rd400.tsp", 
-    "rl1304.tsp", "rl1323.tsp", "rl1889.tsp", "rl5915.tsp", "rl5934.tsp", 
-    "rl11849.tsp", "si175.tsp", "si535.tsp", "si1032.tsp", "st70.tsp", 
-    "swiss42.tsp", "ts225.tsp", "tsp225.tsp", "u159.tsp", "u574.tsp", 
-    "u724.tsp", "u1060.tsp", "u1432.tsp", "u1817.tsp", "u2152.tsp", 
-    "u2319.tsp", "ulysses16.tsp", "ulysses22.tsp", "usa13509.tsp", 
-    "vm1084.tsp", "vm1748.tsp"
-    "br17.atsp", "ft53.atsp", "ft70.atsp", "ftv33.atsp", "ftv35.atsp", 
-    "ftv38.atsp", "ftv44.atsp", "ftv47.atsp", "ftv55.atsp", "ftv64.atsp", 
-    "ftv70.atsp", "ftv170.atsp", "kro124p.atsp", "p43.atsp", "rbg358.atsp", 
-    "rbg403.atsp", "rbg443.atsp", "ry48p.atsp",
-]
-)
+		self.dropdown_problems.addItems(list(opt_solutions.keys()))
 		self.dropdown_problems_label = QLabel("Problem Name")
 
 		# Integer input
 		self.int_input = QLineEdit()
-		self.int_input.setPlaceholderText("20? 45?")
+		self.int_input.setPlaceholderText("20? 45? More?")
 		self.int_input_label = QLabel("How many cities will you visit?")
 		self.left_layout.addWidget(self.int_input_label)
 		self.left_layout.addWidget(self.int_input)
@@ -103,7 +79,7 @@ class MainWindow(QMainWindow):
 		self.slider = QSlider(Qt.Horizontal)
 		self.slider.setMinimum(1)
 		self.slider.setMaximum(100)
-		self.slider.setValue(50)
+		self.slider.setValue(80)
 		self.slider_label = QLabel("How connected is your map?")
 		self.slider.valueChanged.connect(lambda: self.slider_label.setText(f"{self.slider.value()}% Connected"))
 		self.left_layout.addWidget(self.slider_label)
@@ -181,8 +157,9 @@ class MainWindow(QMainWindow):
 
 	def update_graph(self):
 
-		"""Makes a placeholder graph and loads it in the WebEngineView."""
-
+		"""
+		Makes a placeholder graph and loads it in the WebEngineView."""
+		
 		net = Network(
 			height='550px', width="100%",
 			bgcolor="#ffffff", cdn_resources='local')
@@ -195,29 +172,37 @@ class MainWindow(QMainWindow):
 		"""Handles the button click, collects input values, and updates the graph."""
 
 		algos = {
-			# "Ant Colony": ant_colony,
-			# "Branch and Bound": branch_and_bound,
-			# "Branch and Bound - Matrix Reduction",
-			# "Brute Force": brute_force,
+			"Ant Colony": ant_colony,
+			"Branch and Bound": branch_and_bound,
+			#"Branch and Bound - Matrix Reduction",
+			"Brute Force": brute_force,
 			"Dynamic Programming": dynamic_programming,
-			# "Genetic Approach": genetic,
-			# "Greedy": greedy,
-			# "Lin-Kernighan": lin_Kernighan,
+			"Genetic Approach": genetic,
+			"Greedy": greedy,
+			"Lin-Kernighan": lin_kernighan,
 			"Randomized": randomized
 			}
 
 		if self.toggle.isChecked():
-			if ".atsp" in self.dropdown_problems.currentText():
+			problem_name = self.dropdown_problems.currentText()
+			if ".atsp" in problem_name:
 				folder = "ALL_atsp"
 			else: 
 				folder = "ALL_tsp"
-			problem = tsplib95.load(f"{parent_dir}\\data\\{folder}\\{self.dropdown_problems.currentText()}")
+			problem = tsplib95.load(f"{parent_dir}\\data\\{folder}\\{problem_name}")
+			sparsity_check = True
+			#if it's a known problem get the opt too
+			opt_cost = opt_solutions[problem_name]#[0]
+			#opt_route = opt_solutions[problem_name][1]
+			optional_line = f", and the optimum cost is {opt_cost}"
 		else:
 			# Generate problem
 			n_cities = int(self.int_input.text())
-			sparsity = self.slider.value()
-			cities = generate_tsp(n=n_cities,sparsity=sparsity) #these are coodinates
+			sparsity = self.slider.value() / 100
+			cities = generate_tsp(n=n_cities, sparsity=sparsity) #these are coodinates
 			problem = tsplib95.load(f"{parent_dir}\\data\\random\\tsp\\random_tsp.tsp")
+			sparsity_check = False
+			optional_line = ""
 
 		# Run Algorithm
 		algorithm = self.dropdown.currentText()
@@ -238,9 +223,16 @@ class MainWindow(QMainWindow):
 				  size=10, shape="circle", color="#050447",
 				  font=dict(color="#ccccdd", align="center"))
 
-		pairs_route = [(route[-1], route[0])]
+		if route[-1] ==  route[0]:
+			pairs_route = []
+		else:
+			pairs_route = [(route[-1], route[0])]
 		for i in range(len(route)-1):
 			pairs_route.append((route[i], route[i+1]))
+
+		# pairs_opt_route = [(opt_route[-1], opt_route[0])]
+		# for i in range(len(route)-1):
+		# 	pairs_opt_route.append((opt_route[i], opt_route[i+1]))
 
 		all_pairs = [(route[i], route[j]) for i in range(len(route)) for j in range(len(route)) if i != j]
 
@@ -250,32 +242,75 @@ class MainWindow(QMainWindow):
 			target = pair[1]
 			length = dist_matrix[source-1, target-1] # the matrix is 0 indexed
 
-			if length > 0:
-				if pair in pairs_route:
-					edge_color = '#0770ff'
-				else: 
-					edge_color = '#ccccdd' #Gray
+			if sparsity_check:
+				if (length > 0) and (length < 1000000000):
+					if pair in pairs_route:
+						edge_color = '#0770ff'
+					#elif pair in pairs_opt_route:
+						#edge_color = green
+					else: 
+						edge_color = '#ccccdd' #Gray
 
-				net.add_edge(int(source), int(target), length=length, color=edge_color)
+					net.add_edge(int(source), int(target), length=length, color=edge_color)
+			else:
+				if (length > 0):
+					if pair in pairs_route:
+						edge_color = '#0770ff'
+					#elif pair in pairs_opt_route:
+						#edge_color = green
+					else:
+						edge_color = '#ccccdd' #Gray
 
-		net.set_options("""
-			var options = {
-				"physics": {
-					"enabled": false,
-				"stabilization": {
-						"enabled": true,
-						"iterations": 50
-					},
-				"repulsion": {
-						"centralGravity": 0.9,
-						"springLength": 150,
-						"nodeDistance": 200
-					}
-				}
-			}""")
+					net.add_edge(int(source), int(target), length=length, color=edge_color)
+
+		net.set_options(f"""
+		var options = {{
+		"physics": {{
+			"enabled": false,
+			"stabilization": {{
+				"enabled": true,
+				"iterations": 50
+			}},
+			"repulsion": {{
+				"centralGravity": 0.9,
+				"springLength": 150,
+				"nodeDistance": 200
+			}}
+		}}
+		}}""")
 		net.write_html(f"{current_dir}\\graph.html")
 
-		self.left_layout.addWidget(QLabel(f"🚗 The cost of this path is {cost}"))
+		#Inject custom JavaScript
+		with open(f"{current_dir}\\graph.html", "r") as file:
+			html = file.read()
+
+		# Add the custom JavaScript before the closing </body> tag
+		custom_js = f"""
+			<script>
+				document.getElementById('mynetwork').insertAdjacentHTML('afterbegin', `
+			<div style="
+				position: absolute;
+				top: 10px;
+				left: 50%;
+				transform: translateX(-50%);
+				background-color: white;
+				padding: 10px 20px;
+				font-size: 16px;
+				font-family: Arial, sans-serif;
+				border: 1px solid black;
+				border-radius: 5px;
+			">
+				<center>The cost of this path is {cost}{optional_line}</center>
+			</div>
+			`);
+			</script>
+		"""
+		html = html.replace("</body>", f"{custom_js}</body>")
+
+		# Save the modified HTML
+		with open(f"{current_dir}\\graph.html", "w") as file:
+			file.write(html)
+
 		self.web_view.load(QUrl.fromLocalFile(f"{current_dir}\\graph.html"))
 
 # Run the application

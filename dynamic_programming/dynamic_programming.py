@@ -121,7 +121,7 @@ def dynamic_programming(distance_matrix):
 	path.append(first_city)
 	path.reverse()
 
-	return (path, min_cost)
+	return path, min_cost
 #%% EXECUTION
 
 # Load a problem

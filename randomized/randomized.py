@@ -127,11 +127,11 @@ def randomized(distance_matrix):
 			T *= 1.1
 			print(f"I'm in iteration {i}, don't kill me. I have kids.")
 
-	return (route, dist_best)
+	return route, dist_best
 #%% Execution Example
 # import matplotlib.pyplot as plt
 
-# problem = tsplib95.load(r'data\ALL_tsp\burma14.tsp')
+# problem = tsplib95.load(r'C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_tsp\burma14.tsp')
 # distance_matrix = create_distance_matrix(problem)
 
 # results_tuple, results = randomized(distance_matrix)
@@ -140,3 +140,4 @@ def randomized(distance_matrix):
 # plt.title(f'p size = {len(distance_matrix)}, Cost = {results_tuple[1]}')
 # plt.ylabel("Cost")
 # plt.xlabel("Iterations");##
+# %%

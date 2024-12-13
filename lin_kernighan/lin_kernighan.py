@@ -19,7 +19,7 @@ def lin_kernighan(tsp_matrix):
     """
     num_nodes = len(tsp_matrix)  # Number of nodes in the TSP
     # Initialize a tour starting from node 0 and returning to it
-    current_tour = list(range(num_nodes)) + [0]
+    current_tour = list(range(num_nodes)) #+ [0]
     best_tour = current_tour[:]  # Copy of the current tour as the best tour
     best_cost = calculate_cost(best_tour, tsp_matrix)  # Calculate the cost of the initial tour
 

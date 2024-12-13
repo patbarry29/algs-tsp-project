@@ -7,9 +7,9 @@ import tsplib95
 from utils.get_opt_cost import get_optimal_cost
 from data.opt_cost import tsp as opt_sol
 from utils.create_distance_matrix import create_distance_matrix
-import optuna
-import plotly
-import sklearn
+# import optuna
+# import plotly
+# import sklearn
 
 # Adapted from https://www.geeksforgeeks.org/traveling-salesman-problem-using-genetic-algorithm/
 
@@ -234,7 +234,7 @@ def genetic(distance_matrix, hyperparams=None):
     seq = [x+1 for x in best_individual.gnome]
     print("\nBest sequence:", seq)
     print("Cost:", cost)
-    return cost, seq
+    return seq, cost
 
 def objective(trial):
     params = {
