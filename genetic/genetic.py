@@ -3,9 +3,9 @@ from random import randint
 import matplotlib.pyplot as plt
 import numpy as np
 import tsplib95
-from utils.get_opt_cost import get_optimal_cost
-from data.opt_cost import tsp as opt_sol
-from utils.create_distance_matrix import create_distance_matrix
+# from utils.get_opt_cost import get_optimal_cost
+# from data.opt_cost import tsp as opt_sol
+# from utils.create_distance_matrix import create_distance_matrix
 
 INT_MAX = 2147483647
 
@@ -138,23 +138,24 @@ def genetic(distance_matrix, hyperparams=None):
     best_individual = min(population, key=lambda x: x['fitness'])
     cost = best_individual['fitness']
     seq = [int(x + 1) for x in best_individual['chrom']]
-    return cost, seq
+    return seq, cost
 
-data = "a280"
-problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
-distance_matrix = create_distance_matrix(problem)
+if __name__ == '__main__':
+    data = "a280"
+    # problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
+    # distance_matrix = create_distance_matrix(problem)
 
-hyperparams = {
-    "POP_SIZE": 200,
-    "GEN_THRESH": 5000,
-    "crossover_rate": 0.9,
-    "mutation_rate": 0.3,
-}
+    # hyperparams = {
+    #     "POP_SIZE": 200,
+    #     "GEN_THRESH": 5000,
+    #     "crossover_rate": 0.9,
+    #     "mutation_rate": 0.3,
+    # }
 
-cost, seq = genetic(distance_matrix, hyperparams)
-print('\nCost:', cost)
-print('Sequence:', seq)
+    # cost, seq = genetic(distance_matrix, hyperparams)
+    # print('\nCost:', cost)
+    # print('Sequence:', seq)
 
-opt_cost = get_optimal_cost(opt_sol.data, data)
-print("\nOptimal cost:", opt_cost)
-print("\nRelative error:", (cost - opt_cost) / opt_cost)
+    # opt_cost = get_optimal_cost(opt_sol.data, data)
+    # print("\nOptimal cost:", opt_cost)
+    # print("\nRelative error:", (cost - opt_cost) / opt_cost)

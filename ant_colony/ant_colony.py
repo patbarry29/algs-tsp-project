@@ -90,7 +90,7 @@ def ant_colony(distance_matrix, params={}):
     distance_matrix[distance_matrix == 0] = epsilon
 
     alpha = params.get('alpha', 1)   # exploitation param
-    beta = params.get('beta', 3)    # exploration param
+    beta = params.get('beta', 4)    # exploration param
     num_iterations = params.get('num_iterations', 100)
     evaporation_rate = params.get('evaporation_rate', 0.1)
     initial_pheromone_level = params.get('initial_pheromone_level', 0.1)
@@ -148,7 +148,7 @@ def ant_colony(distance_matrix, params={}):
 if __name__ == "__main__":
     # generate_tsp(n=100)
     # problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
-    problem = tsplib95.load('data/ALL_atsp/rbg323.atsp')
+    problem = tsplib95.load('data/ALL_tsp/bier127.tsp')
     # problem = tsplib95.load('data/random/atsp/random_atsp.atsp')
 
     distance_matrix = create_distance_matrix(problem)

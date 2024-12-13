@@ -13,3 +13,7 @@ __pycache__/
 
 random_tsp.tsp
 random_atsp.atsp
+
+ant_colony/plots
+
+.gitignore
