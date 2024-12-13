@@ -18,7 +18,7 @@ def plot_runtime(tsplib_instances, algo_function):
 
     for instance_name in tsplib_instances:
         try:
-            problem = tsplib95.load(f'../data/ALL_atsp/{instance_name}.atsp')
+            problem = tsplib95.load(f'../data/ALL_tsp/{instance_name}.tsp')
             distance_matrix = create_distance_matrix(problem)
 
             start_time = time.time()
@@ -34,7 +34,7 @@ def plot_runtime(tsplib_instances, algo_function):
             print(f"Error processing instance {instance_name}: {e}")
 
     if runtimes:
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(6, 6))
         plt.plot(instance_names, runtimes, marker='o', linestyle='-')
 
         for i, runtime in enumerate(runtimes):
@@ -52,8 +52,9 @@ def plot_runtime(tsplib_instances, algo_function):
 
 if __name__ == "__main__":
     tsplib_instances = [
-        "br17", "ft53", "ft70", "ftv33", "ftv35", "ftv38", "ftv44", "ftv47",
-        "ftv55", "ftv64", "ftv70", "ftv170", "p43",
-        "rbg323", "rbg358", "rbg403", "rbg443", "ry48p"
+        "berlin52",
+        "ch150",
+        "pr1002",
+        "pla7397"
     ]
     plot_runtime(tsplib_instances, greedy)
