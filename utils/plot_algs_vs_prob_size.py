@@ -8,11 +8,13 @@ import time
 import psutil
 
 
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
 
+from genetic.genetic import genetic
 from branch_and_bound.branch_and_bound import branch_and_bound
 from greedy.greedy import greedy
 from lin_kernighan.lin_kernighan import lin_kernighan
@@ -104,9 +106,9 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
             jittered_x = [x + i*(0.02) for x in problem_sizes]
             plt.plot(jittered_x, avg_metrics, marker=markers[i % len(markers)],
                     color=colors[i % len(colors)], label=solver_names[i])
-            # if measure == 'time':
-                # for j, txt in enumerate(avg_metrics):
-                #     plt.annotate(f"{txt:.2f}", (jittered_x[j], avg_metrics[j]), textcoords="offset points", xytext=(0,5), ha='center')
+            if measure == 'time':
+                for j, txt in enumerate(avg_metrics):
+                    plt.annotate(f"{txt:.2f}", (jittered_x[j], avg_metrics[j]), textcoords="offset points", xytext=(0,5), ha='center')
 
         plt.xlabel("Number of Cities")
         plt.ylabel("Average Total Cost" if measure == 'cost' else "Average Execution Time")
@@ -125,7 +127,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
 
 
 if __name__ == '__main__':
-    algorithms = [brute_force, randomised, branch_and_bound, greedy, lin_kernighan]
-    algorithms_names = ['Brute Force', 'Randomised', 'Branch and Bound', 'Greedy', 'Lin-Kernighan']
-    problem_sizes = list(range(3, 10, 1))
-    plot_algs_vs_problem_size(algorithms, algorithms_names, problem_sizes, measure='both')
+    algorithms = [brute_force, branch_and_bound]
+    algorithms_names = ['Brute Force', 'BB']
+    problem_sizes = list(range(3,10,1))
+    plot_algs_vs_problem_size(algorithms, algorithms_names, problem_sizes, measure='time')
