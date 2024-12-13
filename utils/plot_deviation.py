@@ -1,49 +1,49 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import tsplib95
-from data.opt_cost import atsp as opt_sol
+from data.opt_cost import tsp as opt_sol
 from greedy.greedy import greedy
 from utils.create_distance_matrix import create_distance_matrix
 from utils.get_opt_cost import get_optimal_cost
 
 
-def plot_relative_error(tsplib_instances, algo_function):
+def plot_deviation(tsplib_instances, algo_function):
     """
-    Plot the relative error between the algorithm's output
+    Plot the deviation between the algorithm's output
     and the optimal costs for multiple TSPLIB instances.
 
     Parameters:
     tsplib_instances (list): List of TSPLIB instance names.
     algo_function (function): The algorithm function to compute the cost and route.
     """
-    relative_errors = []
+    deviations = []
     instance_names = []
 
     for instance_name in tsplib_instances:
         try:
-            problem = tsplib95.load(f'../data/ALL_atsp/{instance_name}.atsp')
+            problem = tsplib95.load(f'../data/ALL_tsp/{instance_name}.tsp')
             distance_matrix = create_distance_matrix(problem)
             route, algo_cost = algo_function(distance_matrix)
             optimal_cost = get_optimal_cost(opt_sol.data, instance_name)
 
             if optimal_cost is not None:
-                # Calculate the relative error
+                # Calculate the deviation in percentage
                 error = (algo_cost - optimal_cost) / optimal_cost * 100
-                relative_errors.append(error)
+                deviations.append(error)
                 instance_names.append(instance_name)
             else:
                 print(f"Optimal cost not available for instance: {instance_name}")
         except Exception as e:
             print(f"Error processing instance {instance_name}: {e}")
 
-    if relative_errors:
-        avg_error = np.mean(relative_errors)
+    if deviations:
+        avg_error = np.mean(deviations)
 
-        plt.figure(figsize=(10, 6))
-        bars = plt.bar(instance_names, relative_errors)
+        plt.figure(figsize=(6, 6))
+        bars = plt.bar(instance_names, deviations)
 
         # Add the percentage on top of each bar
-        for bar, deviation in zip(bars, relative_errors):
+        for bar, deviation in zip(bars, deviations):
             height = bar.get_height()
             plt.text(
                 bar.get_x() + bar.get_width() / 2.0,
@@ -55,21 +55,22 @@ def plot_relative_error(tsplib_instances, algo_function):
                 color='black'
             )
 
-        plt.axhline(y=avg_error, color='r', linestyle='--', label=f'Average relative error: {avg_error:.2f}%')
+        plt.axhline(y=avg_error, color='r', linestyle='--', label=f'Average deviation: {avg_error:.2f}%')
         plt.xlabel('TSPLIB Instances')
-        plt.ylabel('Relative Error (%)')
-        plt.title('Relative Error of Greedy Algorithm')
+        plt.ylabel('Deviations (%)')
+        plt.title('Deviations of Greedy Algorithm')
         plt.xticks(rotation=45, ha='right')
         plt.legend()
         plt.tight_layout()
         plt.show()
     else:
-        print("No valid relative errors to plot.")
+        print("No valid deviation to plot.")
 
 if __name__ == "__main__":
     tsplib_instances = [
-        "br17", "ft53", "ft70", "ftv33", "ftv35", "ftv38", "ftv44", "ftv47",
-        "ftv55", "ftv64", "ftv70", "ftv170", "p43",
-        "rbg323", "rbg358", "rbg403", "rbg443", "ry48p"
+        "berlin52",
+        "ch150",
+        "pr1002",
+        "pla7397"
     ]
-    plot_relative_error(tsplib_instances, greedy)
+    plot_deviation(tsplib_instances, greedy)

@@ -22,7 +22,7 @@ import tsplib95
 
 from utils.create_distance_matrix import create_distance_matrix
 from utils.generate_tsp import generate_tsp
-from randomised.randomised import randomised
+from randomized.randomized import randomized
 from dynamic_programming.dynamic_programming import dynamic_programming
 
 #%%
@@ -133,7 +133,7 @@ class MainWindow(QMainWindow):
 		"""Handles the button click, collects input values, and updates the graph."""
 
 		algos = {
-			"Randomised": randomised,
+			"Randomised": randomized,
 			"Dynamic Programming": dynamic_programming
 			}
 
@@ -162,7 +162,7 @@ class MainWindow(QMainWindow):
 					if dist_matrix[i, j] > 0:
 						G.add_edge(i + 1, j + 1, weight=dist_matrix[i, j])
 
-			# Sse the generated problem if they're coordinates, else Initialize random positions if needed 
+			# The generated problem if they're coordinates, else Initialize random positions if needed 
 			if cities.shape[1] == 2:
 				pos = cities.copy()
 			else:
@@ -207,22 +207,25 @@ class MainWindow(QMainWindow):
 			edge_trace = go.Scatter(
 				x=edge_x, y=edge_y,
 				line=dict(width=0.5, color='#888'),
-				hoverinfo='none',
+				hoverinfo='none', opacity=0.5,
 				mode='lines')
 
 			path_trace = go.Scatter(
 				x=edge_x_path, y=edge_y_path,
 				line=dict(width=1.5, color='#0770ff'),
 				hoverinfo='none',
-				mode='lines'
+				mode='lines',
 				)
 
 			node_trace = go.Scatter(
 				x=node_x, y=node_y,
-				mode='markers',
+				mode='markers+text',
+				text=[str(i+1) for i in range(len(node_x))],
+				textposition='middle center',
+				textfont_color = '#888',
 				hoverinfo='text',
 				marker=dict(
-					size=15, line_width=0, color="#290a59")
+					size=25, line_width=0, color="#050447")
 					)
 
 			fig = go.Figure(

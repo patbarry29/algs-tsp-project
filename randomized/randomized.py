@@ -1,6 +1,6 @@
 # %%
 # Traveling Salesman Problem
-# Randomised Approach - Markov Chain Monte Carlo Approximation
+# Randomized Approach - Markov Chain Monte Carlo Approximation
 # Developer: Chelsy Mena
 
 #%% LIBRARY IMPORTS
@@ -54,7 +54,7 @@ def route_distance(distance_matrix, route):
 
 	return dist_route
 
-def randomised(distance_matrix):
+def randomized(distance_matrix):
 
 	"""
 		Obtains a path and the cost of it for TSP
@@ -106,7 +106,7 @@ def randomised(distance_matrix):
 			if (delta < 0) or \
 				(T > 0.0000005 and np.random.rand(1)[0] < np.exp(-delta/T)):
 				route = current_route.copy()
-			
+				
 			dist_route = route_distance(distance_matrix, route)
 			if  dist_route < dist_best:
 				dist_best = dist_route
