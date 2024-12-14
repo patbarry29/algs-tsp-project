@@ -14,10 +14,9 @@ def rand_num(start, end):
     return randint(start, end - 1)
 
 def create_chrom(nb_cities):
-    """Creates a valid chromosome (tour)."""
-    chrom = list(range(nb_cities))
-    chrom = random.sample(chrom, len(chrom))  # Shuffle the list
-    chrom.append(chrom[0])  # Return to the starting city
+    """Creates a valid chromosome (tour) starting and ending at city 0."""
+    chrom = [0] + random.sample(range(1, nb_cities), nb_cities - 1)
+    chrom.append(0)  # Return to the starting city
     return chrom
 
 def cal_fitness(chrom, distance_matrix):
@@ -52,30 +51,30 @@ def selection_tournament(population, tourn_size=3):
     return selected_population
 
 def apply_crossover(parent1, parent2, distance_matrix):
-    """Applies Order Crossover (OX1) to generate offspring."""
-    size = len(parent1['chrom']) - 1  # Do not include the last repeated city
-    child_chrom = [-1] * size  # Initialize child with placeholders
+    """Applies Order Crossover (OX1) ensuring the starting city remains the same."""
+    size = len(parent1['chrom']) - 1
+    child_chrom = [-1] * size
+    child_chrom[0] = parent1['chrom'][0]  # Keep the starting city
     start, end = sorted([rand_num(1, size), rand_num(1, size)])
     child_chrom[start:end] = parent1['chrom'][start:end]
-    p2_genes = [gene for gene in parent2['chrom'] if gene not in child_chrom]
+    p2_genes = [gene for gene in parent2['chrom'] if gene not in child_chrom and gene != child_chrom[0]]
     i = 0
-    for j in range(size):
+    for j in range(1, size):  # Start from 1 to avoid changing the starting city
         if child_chrom[j] == -1:
             child_chrom[j] = p2_genes[i]
             i += 1
     child_chrom.append(child_chrom[0])
     child_fitness = cal_fitness(child_chrom, distance_matrix)
     return {'chrom': child_chrom, 'fitness': child_fitness}
-
 def apply_mutation(population, mutation_rate, distance_matrix):
-    """Applies reverse mutation to the entire population."""
+    """Applies reverse mutation without altering the starting city."""
     for individual in population:
         if random.random() < mutation_rate:
             Chrom = np.array(individual['chrom'])
-            n1, n2 = np.random.randint(0, len(Chrom) - 1, 2)
+            n1, n2 = np.random.randint(1, len(Chrom) - 1, 2)  # Start from index 1
             if n1 >= n2:
                 n1, n2 = n2, n1 + 1
-            Chrom[n1:n2] = Chrom[n1:n2][::-1]  # Reverse the segment
+            Chrom[n1:n2] = Chrom[n1:n2][::-1]
             individual['chrom'] = list(Chrom)
             individual['fitness'] = cal_fitness(individual['chrom'], distance_matrix)
     return population
