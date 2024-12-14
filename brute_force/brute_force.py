@@ -6,11 +6,13 @@ import numpy as np
 import sys
 import os
 
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
 
+from utils.generate_tsp import generate_tsp
 from utils.create_distance_matrix import create_distance_matrix
 
 def calculate_tour_distance(tour, distance_matrix):
@@ -58,14 +60,14 @@ def brute_force(distance_matrix):
 
         i += 1
         # Print loading bar
-        print_loading_bar(i, total_permutations)
+        # print_loading_bar(i, total_permutations)
 
         # Update best tour if current tour is shorter
         if current_distance < best_distance:
             best_distance = current_distance
             best_tour = current_tour
 
-    print()
+    # print()
 
     if best_tour:
         best_tour = [i+1 for i in best_tour]
@@ -74,7 +76,7 @@ def brute_force(distance_matrix):
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
-    # generate_atsp(n=5, dim_size=10, sparsity=0.2)
+    generate_tsp(n=11)
     problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
     # problem = tsplib95.load('data/random/atsp/random_atsp.atsp')
 
