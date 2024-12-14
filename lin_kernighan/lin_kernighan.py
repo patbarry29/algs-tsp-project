@@ -18,8 +18,8 @@ def lin_kernighan(tsp_matrix):
     tuple: A list of the route sequence and the total cost.
     """
     num_nodes = len(tsp_matrix)  # Number of nodes in the TSP
-    # Initialize a tour starting from node 0 and returning to it
-    current_tour = list(range(num_nodes)) + [0]
+    # Initialize a tour starting from node 0
+    current_tour = list(range(num_nodes))
     best_tour = current_tour[:]  # Copy of the current tour as the best tour
     best_cost = calculate_cost(best_tour, tsp_matrix)  # Calculate the cost of the initial tour
 
@@ -37,6 +37,9 @@ def lin_kernighan(tsp_matrix):
                 improved = True  # Set improved to True to continue the loop
                 break  # Exit the loop to start over with the improved tour
 
+    # Convert tour indices to start from 1
+    best_tour = [city + 1 for city in best_tour]
+
     return best_tour, best_cost  # Return the best tour and its cost
 
 def calculate_cost(tour, tsp_matrix):
@@ -45,15 +48,27 @@ def calculate_cost(tour, tsp_matrix):
     return sum(tsp_matrix[tour[i]][tour[i + 1]] for i in range(len(tour) - 1))
 
 def perform_k_opt_move(tour, k, tsp_matrix):
-    """Perform a k-opt move on the tour."""
-    # This is a placeholder for the k-opt move logic
-    # Implement the logic to perform a k-opt move and return the new tour
-    return tour
+    """Perform a 2-opt move on the tour."""
+    best_tour = tour[:]
+    best_cost = calculate_cost(tour, tsp_matrix)
+    
+    for i in range(len(tour) - 1):
+        for j in range(i + 2, len(tour)):
+            if j - i == 1: 
+                continue  # Skip adjacent edges
+            # Reverse the segment between i and j
+            new_tour = tour[:i] + tour[i:j][::-1] + tour[j:]
+            new_cost = calculate_cost(new_tour, tsp_matrix)
+            if new_cost < best_cost:
+                best_tour = new_tour
+                best_cost = new_cost
+    
+    return best_tour
 
 # Driver Code
 if __name__ == "__main__":
     # Load a TSP problem from a file
-    problem = tsplib95.load('data/ALL_tsp/ali535.tsp')
+    problem = tsplib95.load('data/ALL_tsp/burma14.tsp')
     # Create a distance matrix from the problem
     distance_matrix = create_distance_matrix(problem)
 
