@@ -1,4 +1,5 @@
 import numpy as np
+CONSTANT_MAX_VALUE = 1000000000
 
 def add_sparsity(distance_matrix, sparsity, symmetric):
     num_nodes = distance_matrix.shape[0]
@@ -22,7 +23,7 @@ def add_sparsity(distance_matrix, sparsity, symmetric):
     mask = np.logical_or(mask, np.logical_and(random_mask, np.logical_not(mask)))
 
     # 6. Apply the mask to the distance matrix
-    sparse_matrix = np.where(mask, distance_matrix, np.max(distance_matrix) ** 3)
+    sparse_matrix = np.where(mask, distance_matrix, CONSTANT_MAX_VALUE)
     np.fill_diagonal(sparse_matrix, 0)
 
     return sparse_matrix

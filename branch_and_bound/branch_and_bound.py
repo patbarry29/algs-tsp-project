@@ -7,12 +7,12 @@ import time
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Add the utils directory to sys.path
-utils_dir = os.path.abspath(os.path.join(current_dir, '..', 'utils'))
+utils_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(utils_dir)
 
 # Import the modules
-from create_distance_matrix import create_distance_matrix
-from generate_atsp import generate_atsp
+from utils.create_distance_matrix import create_distance_matrix
+from utils.generate_atsp import generate_atsp
 def calculate_tour_distance(tour, distance_matrix):
     """
     Calculate the total distance of a tour using the distance matrix.
@@ -83,7 +83,8 @@ def branch_and_bound(distance_matrix):
 
 if __name__ == "__main__":
     # Example usage with a TSPLIB problem
-    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
+    generate_atsp(n=20)
+    problem = tsplib95.load('data/random/atsp/random_atsp.atsp')
     distance_matrix = create_distance_matrix(problem)
 
     # Solve the problem

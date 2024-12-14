@@ -11,10 +11,10 @@ sys.path.append(parent_dir)
 from utils.create_distance_matrix import create_distance_matrix
 from utils.generate_tsp import generate_tsp
 
-from Randomised.randomised import randomized
+from randomized.randomized import randomized
 from ant_colony.ant_colony import ant_colony
 from brute_force.brute_force import brute_force
-from greedy.greedy import greedy
+from greedy.greedy import find_min_route
 
 
 
@@ -72,8 +72,8 @@ def plot_cost_vs_cities(tsp_solvers, solver_names, problem_sizes):
 
 
 if __name__ == '__main__':
-    algorithms = [ant_colony, greedy(), randomized]
+    algorithms = [ant_colony, find_min_route, randomized]
     # np.random.seed(1)
-    algorithms_names = ['ACO', 'Greedy', 'Randomised']
+    algorithms_names = ['ACO', 'Greedy', 'Randomized']
     problem_sizes = list(range(10,101,10))
     plot_cost_vs_cities(algorithms, algorithms_names, problem_sizes)
