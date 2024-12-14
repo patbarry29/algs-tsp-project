@@ -72,6 +72,11 @@ def calculateCost(reducedMatrix):
     cost += columnReduction(reducedMatrix)
     return cost
 
+# Function to handle edge selection and log edge details
+def edge_selection(parent_node, i, j):
+    edge_cost = parent_node.reducedMatrix[i][j]
+    print(f"Edge selected: {i + 1} -> {j + 1}, Cost: {edge_cost}")
+    return edge_cost
 
 # Solve TSP using Branch and Bound with tracking for convergence
 def branch_and_bound(CostGraphMatrix):
@@ -104,7 +109,7 @@ def branch_and_bound(CostGraphMatrix):
                 edge_cost = current_node.reducedMatrix[i][j]
                 child.cost = current_node.cost + current_node.reducedMatrix[i][j]
                 child.cost += calculateCost(child.reducedMatrix)
-                print(f"Edge selected: {i + 1} -> {j + 1}, Cost: {edge_cost}")
+                
                 pq.put((child.cost, child))
 
     return float('inf'), [], convergence_costs  # Return a default path when no solution is found
@@ -119,23 +124,23 @@ def calculateFinalCost(path, originalMatrix):
 
 
 # Plot convergence
-#def plot_convergence(costs):
-    #plt.figure(figsize=(10, 6))
-    #plt.plot(range(len(costs)), costs, marker='o', linestyle='-', color='b')
-    #plt.title('Convergence of Branch and Bound')
-    #plt.xlabel('Iteration')
-    #plt.ylabel('Total Cost')
-    #plt.grid()
+def plot_convergence(costs):
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(len(costs)), costs, marker='o', linestyle='-', color='b')
+    plt.title('Convergence of Branch and Bound')
+    plt.xlabel('Iteration')
+    plt.ylabel('Total Cost')
+    plt.grid()
     # Print total cost on the plot
-    #plt.text(len(costs) - 1, costs[-1], f'Total Cost = {costs[-1]}', 
-             #horizontalalignment='right', verticalalignment='bottom', fontsize=12, color='red')
-    #plt.show()
+    plt.text(len(costs) - 1, costs[-1], f'Total Cost = {costs[-1]}', 
+             horizontalalignment='right', verticalalignment='bottom', fontsize=12, color='red')
+    plt.show()
 
 
 # Example usage
 if __name__ == "__main__":
     # Load the TSP problem from a file using tsplib95
-    problem = tsplib95.load('C:\\Users\\mahim\\OneDrive\\Documents\\algs-tsp-project-1\\data\\ALL_tsp\\burma14.tsp')  # Load the problem using tsplib95
+    problem = tsplib95.load('data/random/atsp/random_atsp.atsp')  # Load the problem using tsplib95
     distance_matrix_data = create_distance_matrix(problem)  # Use the imported function to get the matrix
     N = len(distance_matrix_data)
 
@@ -160,4 +165,4 @@ if __name__ == "__main__":
     print(f"Time taken: {end_time - start_time:.4f} seconds")
 
     # Plot the convergence
-    #plot_convergence(convergence_costs)
+    plot_convergence(convergence_costs)
