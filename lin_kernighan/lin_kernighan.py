@@ -37,24 +37,28 @@ def lin_kernighan(tsp_matrix):
                 improved = True  # Set improved to True to continue the loop
                 break  # Exit the loop to start over with the improved tour
 
-    # Convert tour indices to start from 1
+    # Convert tour indices to start from 1 and append the starting city
     best_tour = [city + 1 for city in best_tour]
+    best_tour.append(best_tour[0])  # Return to the starting city
 
     return best_tour, best_cost  # Return the best tour and its cost
 
 def calculate_cost(tour, tsp_matrix):
     """Calculate the total cost of a given tour."""
     # Sum the distances between consecutive nodes in the tour
-    return sum(tsp_matrix[tour[i]][tour[i + 1]] for i in range(len(tour) - 1))
+    total_cost = sum(tsp_matrix[tour[i]][tour[i + 1]] for i in range(len(tour) - 1))
+    # Add the cost to return to the starting city
+    total_cost += tsp_matrix[tour[-1]][tour[0]]
+    return total_cost
 
 def perform_k_opt_move(tour, k, tsp_matrix):
     """Perform a 2-opt move on the tour."""
     best_tour = tour[:]
     best_cost = calculate_cost(tour, tsp_matrix)
-    
+
     for i in range(len(tour) - 1):
         for j in range(i + 2, len(tour)):
-            if j - i == 1: 
+            if j - i == 1:
                 continue  # Skip adjacent edges
             # Reverse the segment between i and j
             new_tour = tour[:i] + tour[i:j][::-1] + tour[j:]
@@ -62,7 +66,7 @@ def perform_k_opt_move(tour, k, tsp_matrix):
             if new_cost < best_cost:
                 best_tour = new_tour
                 best_cost = new_cost
-    
+
     return best_tour
 
 # Driver Code
@@ -80,4 +84,4 @@ if __name__ == "__main__":
     # Print the results
     print("Sequence:", route)
     print("Cost:", total_cost)
-    print(f"Running time: {running_time:.6f} seconds") 
+    print(f"Running time: {running_time:.6f} seconds")

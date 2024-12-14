@@ -13,7 +13,8 @@ sys.path.append(parent_dir)
 
 from dynamic_programming.dynamic_programming import dynamic_programming
 from genetic.genetic import genetic
-from branch_and_bound.branch_and_bound import branch_and_bound
+from branch_and_bound.branch_and_bound import branch_and_bound as bb1
+from branch_and_bound.reduction_matrix_edge_selection import branch_and_bound as bb2
 from greedy.greedy import greedy
 from lin_kernighan.lin_kernighan import lin_kernighan
 from randomized.randomized import randomized
@@ -34,7 +35,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
     problem_sizes_per_solver = [[] for _ in range(len(tsp_solvers))]  # Keep track of problem sizes per solver
 
     for num_cities in problem_sizes:
-        for _ in range(10):  # Create 10 random problems for each number of cities
+        for _ in range(30):  # Create 30 random problems for each number of cities
             # Generate one TSP problem for all solvers
             cities = generate_tsp(num_cities, dim_size=100)
             problem = tsplib95.load("data/random/tsp/random_tsp.tsp")
@@ -43,7 +44,6 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
             # Run each solver on the same problem
             problem_metrics = []  # Initialize an empty list for *this problem*
             for i, solver in enumerate(tsp_solvers):
-                # Skip brute force for num_cities > 9
                 if solver.__name__ == 'brute_force' and num_cities > 10:
                     problem_metrics.append(None)  # Mark as None
                     continue
@@ -134,12 +134,12 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
                             ha='center')
 
         ax1.set_xlabel("Number of Cities")
-        ax1.set_ylabel("Average Total Deviation")
+        ax1.set_ylabel("Average Total Deviation (%)")
         ax1.set_title("Average Deviation vs. Number of Cities in TSP")
         ax1.legend()
 
         ax2.set_xlabel("Number of Cities")
-        ax2.set_ylabel("Average Execution Time")
+        ax2.set_ylabel("Average Execution Time (s)")
         ax2.set_title("Average Execution Time vs. Number of Cities in TSP")
         ax2.legend()
     else:
@@ -160,7 +160,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
                                 ha='center')
 
         plt.xlabel("Number of Cities")
-        plt.ylabel("Average Total Deviation" if measure == 'deviation' else "Average Execution Time")
+        plt.ylabel("Average Total Deviation (%)" if measure == 'deviation' else "Average Execution Time (s)")
         plt.title("Average Deviation vs. Number of Cities in TSP" if measure == 'deviation' else "Average Execution Time vs. Number of Cities in TSP")
         plt.legend()
 
@@ -173,7 +173,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
 
 
 if __name__ == '__main__':
-    algorithms = [brute_force, branch_and_bound, dynamic_programming, randomized, ant_colony]  # Add your other algorithms here
-    algorithms_names = ['Brute Force', 'Branch and Bound', 'Dynamic Programming', 'Mark of Chain', 'Ant Colony']
-    problem_sizes = list(range(4, 30, 1))
+    algorithms = [ant_colony, greedy, lin_kernighan, genetic]
+    algorithms_names = ['ant colony', 'Greedy', 'Lin-Kernighan', 'genetic']
+    problem_sizes = list(range(5,86,10))
     plot_algs_vs_problem_size(algorithms, algorithms_names, problem_sizes, measure='both')
