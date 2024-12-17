@@ -14,7 +14,7 @@ sys.path.append(parent_dir)
 from dynamic_programming.dynamic_programming import dynamic_programming
 from genetic.genetic import genetic
 from branch_and_bound.branch_and_bound import branch_and_bound as bb1
-from branch_and_bound.reduction_matrix_edge_selection import branch_and_bound as bb2
+from branch_and_bound.reduction_matrix_edge_selection import branch_and_bound1 as bb2
 from greedy.greedy import greedy
 from lin_kernighan.lin_kernighan import lin_kernighan
 from randomized.randomized import randomized
@@ -36,14 +36,15 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
     problem_sizes_per_solver = [[] for _ in range(len(tsp_solvers))]
 
     for num_cities in problem_sizes:
-        for _ in range(10):  # Create 30 random problems for each number of cities
+        print('num cities:',num_cities)
+        for _ in range(5):  # Create 30 random problems for each number of cities
             cities = generate_tsp(num_cities, dim_size=100)
             problem = tsplib95.load(os.path.join("data","random","tsp","random_tsp.tsp"))
             distance_matrix = create_distance_matrix(problem)
 
             problem_metrics = []
             for i, solver in enumerate(tsp_solvers):
-                if solver.__name__ == 'brute_force' and num_cities > 10:
+                if solver.__name__ == 'brute_force' and num_cities > 11:
                     problem_metrics.append(None)
                     continue
                 if solver == bb1 and num_cities > 11:
@@ -54,6 +55,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
                     continue
                 if measure == 'deviation':
                     _, total_cost = solver(distance_matrix)
+                    total_cost = np.round(result[1], 2)
                     problem_metrics.append(total_cost)
                 elif measure == 'time':
                     _, running_time, _ = compute_cpu_usage(solver, distance_matrix)
@@ -73,10 +75,12 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
                     continue
 
                 if measure == 'deviation':
-                    solver_metrics = (solver_metrics - min_cost_for_problem) / min_cost_for_problem
+                    print(solver_metrics)
+                    solver_metrics = ((solver_metrics - min_cost_for_problem) / min_cost_for_problem)*100
+                    print(solver_metrics)
                 elif measure == 'both':
                     solver_metrics = (
-                        (solver_metrics[0] - min_cost_for_problem) / min_cost_for_problem, solver_metrics[1])
+                        (solver_metrics[0] - min_cost_for_problem) / min_cost_for_problem, solver_metrics[1])*100
 
                 avg_metrics_per_solver[i].append(solver_metrics)
                 problem_sizes_per_solver[i].append(num_cities)
@@ -92,11 +96,13 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
             if indices:
                 metrics = [solver_metrics[idx] for idx in indices]
                 if measure == 'both':
-                    avg_deviation = np.mean([m[0] for m in metrics])
+                    avg_deviation = np.mean([m[0] for m in metrics])*100
                     avg_time = np.mean([m[1] for m in metrics])
                     solver_avg_metrics.append((size, (avg_deviation, avg_time)))
                 else:
                     avg_metric = np.mean(metrics)
+                    if measure=='deviation':
+                        avg_metric *= 100
                     solver_avg_metrics.append((size, avg_metric))
         averaged_metrics_per_solver.append(solver_avg_metrics)
 
@@ -107,7 +113,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
     alphas = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
     if measure == 'both':
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 6))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
         for i, solver_metrics in enumerate(averaged_metrics_per_solver):
             problem_sizes = [size for size, _ in solver_metrics]
             avg_deviations = [metrics[0] for _, metrics in solver_metrics]
@@ -164,17 +170,8 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
 
 
 if __name__ == '__main__':
-    algorithms = [bb1, bb2]
-    algorithms_names = ['Branch and Bound', 'Brand and Bound with Reduction Matrix and Edge Selection']
+    algorithms = [brute_force]
+    algorithms_names = ['Brute Force']
     problem_sizes = list(range(4, 12, 1))
     plot_algs_vs_problem_size(algorithms, algorithms_names, problem_sizes, measure='time')
 
-# from dynamic_programming.dynamic_programming import dynamic_programming
-# from genetic.genetic import genetic
-# from branch_and_bound.branch_and_bound import branch_and_bound as bb1
-# from branch_and_bound.reduction_matrix_edge_selection import branch_and_bound as bb2
-# from greedy.greedy import greedy
-# from lin_kernighan.lin_kernighan import lin_kernighan
-# from randomized.randomized import randomized
-# from ant_colony.ant_colony import ant_colony
-# from brute_force.brute_force import brute_force
