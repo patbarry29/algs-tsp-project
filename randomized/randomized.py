@@ -130,44 +130,44 @@ def randomized(distance_matrix):
 	return route, dist_best
 
 #%% Execution Example
-import matplotlib.pyplot as plt
-from gui.opt_solutions import opt_solutions
+# import matplotlib.pyplot as plt
+# from gui.opt_solutions import opt_solutions
 
-problems = list(opt_solutions.keys())
+# problems = list(opt_solutions.keys())
 
-opt_solutions_routes = {}
+# opt_solutions_routes = {}
 
-to_plot = [["problem", "opt_cost", "calc_cost"]]
+# to_plot = [["problem", "opt_cost", "calc_cost"]]
 
-for problem_name in problems:
-	if ".atsp" in problem_name:
-		folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_atsp\\"
-	else:
-		folder = folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_tsp\\"
+# for problem_name in problems:
+# 	if ".atsp" in problem_name:
+# 		folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_atsp\\"
+# 	else:
+# 		folder = folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_tsp\\"
 
-	problem = tsplib95.load(f"{folder}{problem_name}")
-	distance_matrix = create_distance_matrix(problem)
+# 	problem = tsplib95.load(f"{folder}{problem_name}")
+# 	distance_matrix = create_distance_matrix(problem)
 
-	i = 0
-	while i < 50:
-		results = randomized(distance_matrix)
+# 	i = 0
+# 	while i < 50:
+# 		results = randomized(distance_matrix)
 
-		to_plot.append([
-			problem_name,
-			opt_solutions[problem_name],
-			results[1]
-		])
+# 		to_plot.append([
+# 			problem_name,
+# 			opt_solutions[problem_name],
+# 			results[1]
+# 		])
 
-		if opt_solutions[problem_name] == results[1]:
-			opt_solutions_routes[problem_name] = (opt_solutions[problem_name], [int(x) for x in results[0]])
+# 		if opt_solutions[problem_name] == results[1]:
+# 			opt_solutions_routes[problem_name] = (opt_solutions[problem_name], [int(x) for x in results[0]])
 
-		i += 1
+# 		i += 1
 
-	np.savetxt('randomized_cities_results_3.txt', np.array(to_plot), delimiter=' ', newline='\n', fmt="%s")
+# 	np.savetxt('randomized_cities_results_3.txt', np.array(to_plot), delimiter=' ', newline='\n', fmt="%s")
 
-	with open(r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\randomized\paths_3.txt", "w") as file:
-			for key, value in opt_solutions_routes.items():
-				file.write(f"{key}: {value}\n")
+# 	with open(r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\randomized\paths_3.txt", "w") as file:
+# 			for key, value in opt_solutions_routes.items():
+# 				file.write(f"{key}: {value}\n")
 
 # #%%
 # plt.plot(range(len(results)), results)
@@ -176,59 +176,59 @@ for problem_name in problems:
 # plt.xlabel("Iterations");
 # %%
 
-import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-import pandas as pd
+# import matplotlib.pyplot as plt
+# import numpy as np
+# import seaborn as sns
+# import pandas as pd
 
-df = pd.DataFrame(to_plot[1:], columns = to_plot[0])
-df['n_cities'] = df['problem'].apply(lambda x: int(''.join([char for char in x if char.isdigit()])))
-df['deviation'] = ((df['calc_cost'] - df['opt_cost'])/df['opt_cost'])*100
-data_plots = df.groupby('problem').agg(['mean', 'std'])
-df['type'] =  df['problem'].apply(lambda x: x.partition('.')[2])
-data_plots['type'] = [x.partition('.')[2] for x in data_plots.index]
+# df = pd.DataFrame(to_plot[1:], columns = to_plot[0])
+# df['n_cities'] = df['problem'].apply(lambda x: int(''.join([char for char in x if char.isdigit()])))
+# df['deviation'] = ((df['calc_cost'] - df['opt_cost'])/df['opt_cost'])*100
+# data_plots = df.groupby('problem').agg(['mean', 'std'])
+# df['type'] =  df['problem'].apply(lambda x: x.partition('.')[2])
+# data_plots['type'] = [x.partition('.')[2] for x in data_plots.index]
 
-# Setup 4-plot layout
-fig, axes = plt.subplots(1, 4, figsize=(20, 5))
-#axes = axes.flatten()
+# # Setup 4-plot layout
+# fig, axes = plt.subplots(1, 4, figsize=(20, 5))
+# #axes = axes.flatten()
 
-sns.scatterplot(
-	data=data_plots,
-	x=data_plots[('n_cities','mean')], 
-	y=data_plots[('deviation', 'mean')],
-	hue=data_plots['type'], ax=axes[0])
-axes[0].set_title("Average Deviation vs Number or Cities")
-axes[0].set_ylabel("Deviation")
-axes[0].set_xlabel("Number of Cities")
+# sns.scatterplot(
+# 	data=data_plots,
+# 	x=data_plots[('n_cities','mean')], 
+# 	y=data_plots[('deviation', 'mean')],
+# 	hue=data_plots['type'], ax=axes[0])
+# axes[0].set_title("Average Deviation vs Number or Cities")
+# axes[0].set_ylabel("Deviation")
+# axes[0].set_xlabel("Number of Cities")
 
-problems_to_show = ['burma14.tsp', 'st70.tsp', 'ch130.tsp']
-# KDE plots
-for i in range(1, 4):
-	temp_df = df[df['problem'] == problems_to_show[i-1]]
-	sns.kdeplot(temp_df['calc_cost'], ax=axes[i])
+# problems_to_show = ['burma14.tsp', 'st70.tsp', 'ch130.tsp']
+# # KDE plots
+# for i in range(1, 4):
+# 	temp_df = df[df['problem'] == problems_to_show[i-1]]
+# 	sns.kdeplot(temp_df['calc_cost'], ax=axes[i])
 
-	opt = np.mean(temp_df['opt_cost'])
-	calc = np.mean(temp_df['calc_cost']) # Example of additional vertical line
+# 	opt = np.mean(temp_df['opt_cost'])
+# 	calc = np.mean(temp_df['calc_cost']) # Example of additional vertical line
 
-	# Highlight mean - Green
-	axes[i].axvline(opt, color='#1cd12b', linestyle='--', label=f'Opt Cost = {opt:.1f}')
-	axes[i].annotate(f'Opt Cost = {opt:.1f}', 
-						xy=(opt, 0.1), 
-						xytext=(opt + 0.5, 0.15), 
-						arrowprops=dict(arrowstyle='->', color='#1cd12b'), color='#1cd12b')
+# 	# Highlight mean - Green
+# 	axes[i].axvline(opt, color='#1cd12b', linestyle='--', label=f'Opt Cost = {opt:.1f}')
+# 	axes[i].annotate(f'Opt Cost = {opt:.1f}', 
+# 						xy=(opt, 0.1), 
+# 						xytext=(opt + 0.5, 0.15), 
+# 						arrowprops=dict(arrowstyle='->', color='#1cd12b'), color='#1cd12b')
 
-	# Additional vertical line
-	axes[i].axvline(calc, color='#d1911c', linestyle='--', label=f' Avg Calc Cost = {calc:.1f}')
-	axes[i].annotate(f'Avg Calc Cost = {calc:.1f}', 
-						xy=(calc, 0.1), 
-						xytext=(calc + 0.5, 0.15), 
-						arrowprops=dict(arrowstyle='->', color='#d1911c'), color='#d1911c')
+# 	# Additional vertical line
+# 	axes[i].axvline(calc, color='#d1911c', linestyle='--', label=f' Avg Calc Cost = {calc:.1f}')
+# 	axes[i].annotate(f'Avg Calc Cost = {calc:.1f}', 
+# 						xy=(calc, 0.1), 
+# 						xytext=(calc + 0.5, 0.15), 
+# 						arrowprops=dict(arrowstyle='->', color='#d1911c'), color='#d1911c')
 
-	axes[i].set_title(f"Calculated Best Cost Distribution for {problems_to_show[i-1].partition('.')[0]}")
-	axes[i].legend()
-	axes[i].set_xlabel("")
-	axes[i].set_ylabel("")
+# 	axes[i].set_title(f"Calculated Best Cost Distribution for {problems_to_show[i-1].partition('.')[0]}")
+# 	axes[i].legend()
+# 	axes[i].set_xlabel("")
+# 	axes[i].set_ylabel("")
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
 # %%

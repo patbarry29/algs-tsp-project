@@ -3,20 +3,9 @@ from random import randint
 import matplotlib.pyplot as plt
 import numpy as np
 import tsplib95
-<<<<<<< HEAD
-from utils.get_opt_cost import get_optimal_cost
-from data.opt_cost import tsp as opt_sol
-from utils.create_distance_matrix import create_distance_matrix
-# import optuna
-# import plotly
-# import sklearn
-
-# Adapted from https://www.geeksforgeeks.org/traveling-salesman-problem-using-genetic-algorithm/
-=======
 # from utils.get_opt_cost import get_optimal_cost
 # from data.opt_cost import tsp as opt_sol
 # from utils.create_distance_matrix import create_distance_matrix
->>>>>>> 7b5cc78e25c014948f798d32cfb66f29bbbade9c
 
 INT_MAX = 2147483647
 
@@ -155,22 +144,12 @@ if __name__ == '__main__':
     # problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
     # distance_matrix = create_distance_matrix(problem)
 
-<<<<<<< HEAD
-    # Best solution in the final population
-    best_individual = min(population, key=lambda x: x.fitness)
-    cost = best_individual.fitness
-    seq = [x+1 for x in best_individual.gnome]
-    print("\nBest sequence:", seq)
-    print("Cost:", cost)
-    return seq, cost
-=======
     # hyperparams = {
     #     "POP_SIZE": 200,
     #     "GEN_THRESH": 5000,
     #     "crossover_rate": 0.9,
     #     "mutation_rate": 0.3,
     # }
->>>>>>> 7b5cc78e25c014948f798d32cfb66f29bbbade9c
 
     # cost, seq = genetic(distance_matrix, hyperparams)
     # print('\nCost:', cost)

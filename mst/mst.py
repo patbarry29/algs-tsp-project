@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import tsplib95
-import heapq
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.create_distance_matrix import create_distance_matrix
@@ -68,7 +67,7 @@ def route_distance(tour, distance_matrix):
         cost += distance_matrix[from_vertex][to_vertex]
     return cost
 
-def mst_tsp(distance_matrix):
+def mst(distance_matrix):
     n = len(distance_matrix)
     edges = get_mst_edges(distance_matrix)
     #print(edges)
@@ -76,14 +75,14 @@ def mst_tsp(distance_matrix):
     cost = route_distance(tour, distance_matrix)
     return tour, cost
 
-if __name__ == "__main__":
-    problem = tsplib95.load('data/ALL_tsp/burma14.tsp')
-    matrix = create_distance_matrix(problem)
+# if __name__ == "__main__":
+#     problem = tsplib95.load('data/ALL_tsp/burma14.tsp')
+#     matrix = create_distance_matrix(problem)
     
-    start_time = time.time()
-    tour, cost = mst_tsp(matrix)
-    end_time = time.time() - start_time
+#     start_time = time.time()
+#     tour, cost = mst(matrix)
+#     end_time = time.time() - start_time
     
-    print("Tour:", tour)
-    print("Cost:", cost) 
-    print(f"Time: {end_time:.6f}s")
+#     print("Tour:", tour)
+#     print("Cost:", cost) 
+#     print(f"Time: {end_time:.6f}s")
