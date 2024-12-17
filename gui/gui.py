@@ -5,6 +5,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
+import subprocess
 
 from PyQt5.QtWidgets import (
 	QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -43,8 +44,11 @@ class MainWindow(QMainWindow):
 
 		self.setWindowTitle("TSP Problem Solver")
 		self.setGeometry(100, 100, 1000, 600)
-		icon_path = os.path.join(current_dir, "icon_use.png")
+		icon_path = os.path.join(current_dir, "icon.png")
 		self.setWindowIcon(QIcon(icon_path))
+
+		# Start Server
+		self.server_process = subprocess.Popen([sys.executable, "-m", "http.server", "8000"], cwd=current_dir)
 
 		# Main layout
 		main_layout = QHBoxLayout()
@@ -173,7 +177,7 @@ class MainWindow(QMainWindow):
 		net.add_node(1, label="Welcome to the TSP Problem Solver!", size=2)
 		html_path = os.path.join(current_dir, "graph.html")
 		net.write_html(html_path)
-		self.web_view.load(QUrl.fromLocalFile(html_path))
+		self.web_view.load(QUrl("http://localhost:8000/graph.html"))
 
 	def on_run_button_clicked(self):
 
@@ -304,7 +308,7 @@ class MainWindow(QMainWindow):
 		with open(html_path, "r") as file:
 			html = file.read()
 
-		# Add the custom JavaScript before the closing </body> tag
+		# Add the custom JavaScript for the cost popup before the closing </body> tag
 		custom_js = f"""
 			<script>
 				document.getElementById('mynetwork').insertAdjacentHTML('afterbegin', `
@@ -327,11 +331,11 @@ class MainWindow(QMainWindow):
 		"""
 		html = html.replace("</body>", f"{custom_js}</body>")
 
-		# Save the modified HTML
 		with open(html_path, "w") as file:
 			file.write(html)
 
-		self.web_view.load(QUrl.fromLocalFile(html_path))
+		#self.web_view.load(QUrl.fromLocalFile(html_path))
+		self.web_view.load(QUrl("http://localhost:8000/graph.html"))
 
 # Run the application
 app = QApplication(sys.argv)
