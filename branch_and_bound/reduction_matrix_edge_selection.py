@@ -1,16 +1,17 @@
 import sys
 import os
+import numpy as np
 import time  # To measure the time taken
 from queue import PriorityQueue
 import tsplib95  # For loading the TSP problem
+import matplotlib.pyplot as plt  # Importing for plotting
+
+# Add parent directory for imports
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
-from utils.create_distance_matrix import create_distance_matrix  # Import the distance matrix function
-
-# Define the number of cities (N) and the infinity value (INF)
-INF = sys.maxsize
+from utils.create_distance_matrix import create_distance_matrix  
 
 # Node class to store each node along with the cost, level, and vertex
 class Node:
@@ -25,116 +26,143 @@ class Node:
         if level != 0:
             self.path.append((i, j))
 
-        # Change the row i and column j to INF to avoid revisiting
+        # Change the row i and column j to infinity to avoid revisiting
         if level != 0:
             for k in range(N):
-                self.reducedMatrix[i][k] = INF
-                self.reducedMatrix[k][j] = INF
-            self.reducedMatrix[j][0] = INF  # Don't return to the start city (0)
+                self.reducedMatrix[i][k] = float('inf')
+                self.reducedMatrix[k][j] = float('inf')
+            self.reducedMatrix[j][0] = float('inf')  # Don't return to the start city (0)
 
     def __lt__(self, other):
         return self.cost < other.cost
 
-# Function to perform row reduction
+
+# Perform row reduction
 def rowReduction(reducedMatrix):
-    row = [INF] * N
+    row = [float('inf')] * N
     for i in range(N):
         for j in range(N):
             if reducedMatrix[i][j] < row[i]:
                 row[i] = reducedMatrix[i][j]
     for i in range(N):
         for j in range(N):
-            if reducedMatrix[i][j] != INF and row[i] != INF:
+            if reducedMatrix[i][j] != float('inf') and row[i] != float('inf'):
                 reducedMatrix[i][j] -= row[i]
-    return row
+    return sum([r for r in row if r != float('inf')])
 
-# Function to perform column reduction
+
+# Perform column reduction
 def columnReduction(reducedMatrix):
-    col = [INF] * N
+    col = [float('inf')] * N
     for i in range(N):
         for j in range(N):
             if reducedMatrix[i][j] < col[j]:
                 col[j] = reducedMatrix[i][j]
     for i in range(N):
         for j in range(N):
-            if reducedMatrix[i][j] != INF and col[j] != INF:
+            if reducedMatrix[i][j] != float('inf') and col[j] != float('inf'):
                 reducedMatrix[i][j] -= col[j]
-    return col
+    return sum([c for c in col if c != float('inf')])
 
-# Function to calculate the cost of the path
+
+# Calculate the cost of the path using row and column reductions
 def calculateCost(reducedMatrix):
     cost = 0
-    row = rowReduction(reducedMatrix)
-    col = columnReduction(reducedMatrix)
-
-    # Sum the row and column reduction values
-    for i in range(N):
-        cost += (row[i] if row[i] != INF else 0)
-        cost += (col[i] if col[i] != INF else 0)
-
+    cost += rowReduction(reducedMatrix)
+    cost += columnReduction(reducedMatrix)
     return cost
 
-# Function to print the path (tour)
-def printPath(path):
-    print("Path taken:")
-    for pair in path:
-        print(f"{pair[0] + 1} -> {pair[1] + 1}")
+# Function to handle edge selection and log edge details
+def edge_selection(parent_node, i, j):
+    edge_cost = parent_node.reducedMatrix[i][j]
+    print(f"Edge selected: {i + 1} -> {j + 1}, Cost: {edge_cost}")
+    return edge_cost
 
-# Function to solve the TSP problem using Branch and Bound
-def solve(CostGraphMatrix):
+# Solve TSP using Branch and Bound with tracking for convergence
+def branch_and_bound(CostGraphMatrix):
     pq = PriorityQueue()
+    convergence_costs = []  # List to track costs at each iteration
 
-    # Create a root node and calculate its cost
+    # Perform initial reduction and create root node
     root = Node(CostGraphMatrix, [], 0, -1, 0)
     root.cost = calculateCost(root.reducedMatrix)
-
-    # Add root to the list of live nodes
     pq.put((root.cost, root))
 
-    # Continue until the priority queue becomes empty
+    # While there are live nodes
     while not pq.empty():
-        min = pq.get()[1]  # Get node with minimum cost
+        current_node = pq.get()[1]  # Get the node with the lowest cost
+        convergence_costs.append(current_node.cost)  # Track current cost
 
-        i = min.vertex
+        i = current_node.vertex
 
-        # If all the cities have been visited, complete the tour
-        if min.level == N - 1:
-            min.path.append((i, 0))  # Return to the start city
-            # printPath(min.path)  # Print the path taken
-            return min.cost
+        # If all cities are visited, complete the tour
+        if current_node.level == N - 1:
+            current_node.path.append((i, 0))  # Append the return to the start
+            # Convert path to 1-based indexing for readability
+            converted_path = [u + 1 for u, v in current_node.path]
+            return current_node.cost, converted_path, convergence_costs  # Return both cost and 1-based path
 
-        # Generate all the children of the current node
+        # Generate child nodes for the current node
         for j in range(N):
-            if min.reducedMatrix[i][j] != INF:
-                child = Node(min.reducedMatrix, min.path, min.level + 1, i, j)
-                edge_cost = min.reducedMatrix[i][j]
-                child.cost = min.cost + edge_cost + calculateCost(child.reducedMatrix)
-
-                # Print edge selection and cost
-                # print(f"Edge selected: {i + 1} -> {j + 1}, Cost: {edge_cost}")
-
+            if current_node.reducedMatrix[i][j] != float('inf'):
+                child = Node(current_node.reducedMatrix, current_node.path, current_node.level + 1, i, j)
+                edge_cost = current_node.reducedMatrix[i][j]
+                child.cost = current_node.cost + current_node.reducedMatrix[i][j]
+                child.cost += calculateCost(child.reducedMatrix)
+                
                 pq.put((child.cost, child))
 
-    return 0
+    return float('inf'), [], convergence_costs  # Return a default path when no solution is found
 
-# Example usage with a TSPLIB problem
+
+# Calculate the final cost based on the original matrix
+def calculateFinalCost(path, originalMatrix):
+    total_cost = 0
+    for i in range(len(path) - 1):
+        total_cost += originalMatrix[path[i] - 1][path[i + 1] - 1]  # Convert back to 0-based indexing for matrix lookup
+    return total_cost, path
+
+
+# Plot convergence
+def plot_convergence(costs):
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(len(costs)), costs, marker='o', linestyle='-', color='b')
+    plt.title('Convergence of Branch and Bound')
+    plt.xlabel('Iteration')
+    plt.ylabel('Total Cost')
+    plt.grid()
+    # Print total cost on the plot
+    plt.text(len(costs) - 1, costs[-1], f'Total Cost = {costs[-1]}', 
+             horizontalalignment='right', verticalalignment='bottom', fontsize=12, color='red')
+    plt.show()
+
+
+# Example usage
 if __name__ == "__main__":
     # Load the TSP problem from a file using tsplib95
-    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')  # Load the problem using tsplib95
+    problem = tsplib95.load('data/random/atsp/random_atsp.atsp')  # Load the problem using tsplib95
     distance_matrix_data = create_distance_matrix(problem)  # Use the imported function to get the matrix
     N = len(distance_matrix_data)
+
+    # Set diagonal to infinity to prevent self-loops
+    np.fill_diagonal(distance_matrix_data, float('inf'))
 
     # Print the initial distance matrix
     print("Initial Distance Matrix:")
     print(distance_matrix_data)
 
-    # Measure the time taken for the TSP solver
-    start_time = time.time()  # Start timer
-    total_cost = solve(distance_matrix_data)
-    end_time = time.time()  # End timer
+    # Measure the time taken to solve the problem
+    start_time = time.time()
+    total_cost, final_path, convergence_costs = branch_and_bound(distance_matrix_data)
+    end_time = time.time()
 
-    # Print the total cost of the tour
-    print(f"Total cost is: {total_cost}")
+    # Recalculate the cost using the original matrix
+    final_cost, adjusted_path = calculateFinalCost(final_path, distance_matrix_data)
 
-    # Print the time taken
+    # Print the results
+    print(f"\nTotal cost based on reduced matrix: {total_cost}")
+    print("Final Path (1-based indexing):", adjusted_path)
     print(f"Time taken: {end_time - start_time:.4f} seconds")
+
+    # Plot the convergence
+    plot_convergence(convergence_costs)

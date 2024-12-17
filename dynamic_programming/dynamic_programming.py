@@ -23,14 +23,14 @@ def determine_start(nodes):
 
 	"""
 		Function to choose a random node to start the search in
-		
+
 		Input: TSP problem in any of the accepted formats fot the tsp lib
 		Output: Node to start with as an index k, used in the distance matrix
 	"""
 
 	n = len(nodes)
 
-	starting_node = np.random.randint(0, n+1)
+	starting_node = np.random.randint(1, n+1)
 
 	return starting_node
 
@@ -56,7 +56,7 @@ def dynamic_programming(distance_matrix):
 
 		Inputs
 			- np.array with the distance matrix
-		
+
 		Output:
 			- Tuple where the first element is the best path, a python list
 			- The second element is the cost of the path, a float
@@ -79,6 +79,7 @@ def dynamic_programming(distance_matrix):
 		dist = calculate_distance(distance_matrix, v, first_city)
 		distances[(frozenset([v]), v)] = dist
 
+	print(first_city, nodes)
 	nodes.remove(first_city)
 
 	# Calculating the costs of all possible paths, and storing the mins

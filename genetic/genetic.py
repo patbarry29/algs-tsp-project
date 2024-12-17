@@ -1,9 +1,9 @@
 import random
-import time
-from random import randint, shuffle
-
+from random import randint
+import matplotlib.pyplot as plt
 import numpy as np
 import tsplib95
+<<<<<<< HEAD
 from utils.get_opt_cost import get_optimal_cost
 from data.opt_cost import tsp as opt_sol
 from utils.create_distance_matrix import create_distance_matrix
@@ -12,161 +12,101 @@ from utils.create_distance_matrix import create_distance_matrix
 # import sklearn
 
 # Adapted from https://www.geeksforgeeks.org/traveling-salesman-problem-using-genetic-algorithm/
+=======
+# from utils.get_opt_cost import get_optimal_cost
+# from data.opt_cost import tsp as opt_sol
+# from utils.create_distance_matrix import create_distance_matrix
+>>>>>>> 7b5cc78e25c014948f798d32cfb66f29bbbade9c
 
 INT_MAX = 2147483647
-
-class Individual:
-    """Class to represent an individual in the population (GNOME or tour)."""
-    def __init__(self) -> None:
-        self.gnome = []
-        self.fitness = 0
-
-    def __lt__(self, other):
-        return self.fitness < other.fitness
-
-    def __gt__(self, other):
-        return self.fitness > other.fitness
-
 
 def rand_num(start, end):
     """Returns a random number in the range [start, end)."""
     return randint(start, end - 1)
 
+def create_chrom(nb_cities):
+    """Creates a valid chromosome (tour) starting and ending at city 0."""
+    chrom = [0] + random.sample(range(1, nb_cities), nb_cities - 1)
+    chrom.append(0)  # Return to the starting city
+    return chrom
 
-def create_gnome(nb_cities):
-    """Creates a valid GNOME (tour)."""
-    gnome = list(range(nb_cities))
-    shuffle(gnome[1:])  # Shuffle only non-starting cities
-    gnome.append(gnome[0])  # Return to the starting city
-    return gnome
-
-
-def mutated_gene(gnome, nb_cities):
-    """Introduces randomness by swapping two cities in the GNOME
-    (excluding the starting/ending city)."""
-    gnome = gnome[:-1]  # Exclude the last element (starting city)
-    while True:
-        r = rand_num(1, nb_cities)
-        r1 = rand_num(1, nb_cities)
-        if r != r1:
-            gnome[r], gnome[r1] = gnome[r1], gnome[r]
-            break
-    gnome.append(gnome[0])  # Ensure the GNOME is cyclic
-    return gnome
-
-
-def cal_fitness(gnome, distance_matrix):
-    """Calculates the fitness value (total cost) of a GNOME."""
+def cal_fitness(chrom, distance_matrix):
+    """Calculates the fitness value (total cost) of a chromosome."""
     f = 0
-    for i in range(len(gnome) - 1):
-        city1 = gnome[i]
-        city2 = gnome[i + 1]
+    for i in range(len(chrom) - 1):
+        city1 = chrom[i]
+        city2 = chrom[i + 1]
         if distance_matrix[city1][city2] == INT_MAX:
             return INT_MAX
         f += distance_matrix[city1][city2]
     return f
 
-
-def cooldown(temp):
-    """Reduces the temperature."""
-    return temp * 0.95  # Reduce temperature by 5% per generation
-
-
-def two_opt(gnome, distance_matrix):
-    """
-    Applies the 2-opt local search to refine a GNOME (tour).
-    """""
-    # Initialize the best tour as the current GNOME
-    best = gnome[:]
-    # Calculate the cost of the current best tour
-    best_cost = cal_fitness(best, distance_matrix)
-    # Set a flag to track if improvements are made
-    improved = True
-
-    # Continue searching for improvements until no changes are found
-    while improved:
-        improved = False  # Reset the improvement flag for this iteration
-
-        # Loop over all possible pairs of edges in the tour
-        for i in range(1, len(best) - 2):  # Start from the second city (index 1)
-            for j in range(i + 1, len(best) - 1):  # Ensure j > i to avoid duplicate checks
-                if j - i == 1:  # Skip adjacent nodes, as swapping adjacent edges is unnecessary
-                    continue
-
-                # Create a new GNOME by reversing the segment between i and j
-                new_gnome = best[:]  # Copy the current best tour
-                new_gnome[i:j] = best[j - 1:i - 1:-1]  # Reverse the segment between indices i and j
-
-                # Calculate the cost of the new GNOME
-                new_cost = cal_fitness(new_gnome, distance_matrix)
-
-                # If the new GNOME has a lower cost, update the best tour
-                if new_cost < best_cost:
-                    best = new_gnome[:]  # Update the best tour
-                    best_cost = new_cost  # Update the best cost
-                    improved = True  # Set the improvement flag to True
-
-    # Return the refined tour after no further improvements are found
-    return best
-
-
 def initialize_population(nb_cities, pop_size, distance_matrix):
     """Creates the initial population of individuals."""
     population = []
     for _ in range(pop_size):
-        gnome = create_gnome(nb_cities)
-        fitness = cal_fitness(gnome, distance_matrix)
-        individual = Individual()
-        individual.gnome = gnome
-        individual.fitness = fitness
-        population.append(individual)
+        chrom = create_chrom(nb_cities)
+        fitness = cal_fitness(chrom, distance_matrix)
+        population.append({'chrom': chrom, 'fitness': fitness})
     return population
 
-
-def select_parent(population):
-    """Selects a parent for reproduction."""
-    return population[rand_num(0, len(population))]
-
+def selection_tournament(population, tourn_size=3):
+    """Selects the best individuals from a population using tournament selection."""
+    pop_size = len(population)
+    fitness_array = np.array([ind['fitness'] for ind in population])
+    aspirants_idx = np.random.randint(pop_size, size=(pop_size, tourn_size))  # Select indices for tournaments
+    aspirants_values = fitness_array[aspirants_idx]  # Get fitness values of aspirants
+    winner_idx = aspirants_values.argmin(axis=1)  # Index of the winner for each tournament (lower fitness is better)
+    sel_index = [aspirants_idx[i, j] for i, j in enumerate(winner_idx)]  # Index of the selected individuals
+    selected_population = [population[idx] for idx in sel_index]  # Get the winners from the original population
+    return selected_population
 
 def apply_crossover(parent1, parent2, distance_matrix):
-    """Applies crossover to generate offspring (currently using mutation as a placeholder)."""
-    child_gnome = mutated_gene(parent1.gnome, len(distance_matrix))  # Placeholder for proper crossover
-    child_fitness = cal_fitness(child_gnome, distance_matrix)
-    child = Individual()
-    child.gnome = child_gnome
-    child.fitness = child_fitness
-    return child
-
-
-def apply_mutation(individual, mutation_rate, distance_matrix):
-    """Applies mutation to an individual with a given probability."""
-    if randint(0, 100) / 100.0 < mutation_rate:
-        mutated_gnome = mutated_gene(individual.gnome, len(distance_matrix))
-        individual.gnome = mutated_gnome
-        individual.fitness = cal_fitness(mutated_gnome, distance_matrix)
-    return individual
-
-
-def refine_population(population, distance_matrix):
-    """Applies 2-opt refinement to improve solutions in the population."""
+    """Applies Order Crossover (OX1) ensuring the starting city remains the same."""
+    size = len(parent1['chrom']) - 1
+    child_chrom = [-1] * size
+    child_chrom[0] = parent1['chrom'][0]  # Keep the starting city
+    start, end = sorted([rand_num(1, size), rand_num(1, size)])
+    child_chrom[start:end] = parent1['chrom'][start:end]
+    p2_genes = [gene for gene in parent2['chrom'] if gene not in child_chrom and gene != child_chrom[0]]
+    i = 0
+    for j in range(1, size):  # Start from 1 to avoid changing the starting city
+        if child_chrom[j] == -1:
+            child_chrom[j] = p2_genes[i]
+            i += 1
+    child_chrom.append(child_chrom[0])
+    child_fitness = cal_fitness(child_chrom, distance_matrix)
+    return {'chrom': child_chrom, 'fitness': child_fitness}
+def apply_mutation(population, mutation_rate, distance_matrix):
+    """Applies reverse mutation without altering the starting city."""
     for individual in population:
-        refined_gnome = two_opt(individual.gnome, distance_matrix)
-        individual.gnome = refined_gnome
-        individual.fitness = cal_fitness(refined_gnome, distance_matrix)
+        if random.random() < mutation_rate:
+            Chrom = np.array(individual['chrom'])
+            n1, n2 = np.random.randint(1, len(Chrom) - 1, 2)  # Start from index 1
+            if n1 >= n2:
+                n1, n2 = n2, n1 + 1
+            Chrom[n1:n2] = Chrom[n1:n2][::-1]
+            individual['chrom'] = list(Chrom)
+            individual['fitness'] = cal_fitness(individual['chrom'], distance_matrix)
     return population
 
+def plot_best_individual(best_fitness):
+    generations = list(range(1, len(best_fitness) + 1))
+    plt.plot(generations, best_fitness, color='g', label='Best Fitness')
+    plt.title('Best Fitness over Generations')
+    plt.xlabel('Generation')
+    plt.ylabel('Fitness')
+    plt.legend()
+    plt.grid()
+    plt.show()
 
 def genetic(distance_matrix, hyperparams=None):
-    """Main TSP Genetic Algorithm logic."""
 
-    # Default hyperparameters
     defaults = {
-        "POP_SIZE": 50,
-        "GEN_THRESH": 100,
-        "temperature": 10000,
-        "cooling_rate": 0.95,
-        "crossover_rate": 0.8,
-        "mutation_rate": 0.2,
+        "POP_SIZE": 200,
+        "GEN_THRESH": 500,
+        "crossover_rate": 0.7,
+        "mutation_rate": 0.3,
     }
     if hyperparams:
         defaults.update(hyperparams)
@@ -174,60 +114,48 @@ def genetic(distance_matrix, hyperparams=None):
     nb_cities = len(distance_matrix)
     pop_size = defaults["POP_SIZE"]
     gen_thresh = defaults["GEN_THRESH"]
-    temperature = defaults["temperature"]
-    cooling_rate = defaults["cooling_rate"]
     crossover_rate = defaults["crossover_rate"]
     mutation_rate = defaults["mutation_rate"]
 
-    # Initialize variables
-    no_improvement_counter = 0
-    best_overall_fitness = float("inf")
+    best_fitness = []
 
-    # Step 1: Initialize population
+    # Initialize population
     population = initialize_population(nb_cities, pop_size, distance_matrix)
 
-    # Step 2: Iterate through generations
+    # Iterate through generations
     for gen in range(gen_thresh):
-        # Sort by fitness
-        population.sort()
-        current_best_fitness = population[0].fitness
+        population.sort(key=lambda x: x['fitness'])
 
-        # Log generation details
-        print(f"\nGeneration {gen + 1}")
-        # print(f"Temperature: {temperature:.2f}")
-        # print(f"Best Fitness: {current_best_fitness}")
-        # print("Top Individual:", population[0].gnome)
+        current_best_fitness = population[0]['fitness']
+        best_fitness.append(current_best_fitness)
 
-        # Check for improvements
-        if current_best_fitness < best_overall_fitness:
-            best_overall_fitness = current_best_fitness
-            no_improvement_counter = 0
-        else:
-            no_improvement_counter += 1
+        selected_population = selection_tournament(population)
+        new_population = []
+        for i in range(0, len(selected_population), 2):
+            parent1 = selected_population[i]
+            parent2 = selected_population[i + 1] if i + 1 < len(selected_population) else parent1
+            if random.random() < crossover_rate:
+                child = apply_crossover(parent1, parent2, distance_matrix)
+                new_population.append(child)
 
-        # Step 3: Generate new population
-        new_population = [population[0]]  # Elitism
+        new_population.extend(selected_population)  # Combine parents and children
+        new_population = sorted(new_population, key=lambda x: x['fitness'])[:pop_size]  # Select the best individuals
 
-        # Crossover
-        num_crossover = int(crossover_rate * pop_size)
-        while len(new_population) < num_crossover:
-            parent1 = select_parent(population)
-            parent2 = select_parent(population)
-            child = apply_crossover(parent1, parent2, distance_matrix)
-            new_population.append(child)
+        new_population = apply_mutation(new_population, mutation_rate, distance_matrix)
 
-        # Mutation
-        while len(new_population) < pop_size:
-            parent = select_parent(population)
-            mutated_individual = apply_mutation(parent, mutation_rate, distance_matrix)
-            new_population.append(mutated_individual)
+        population = new_population
 
-        # Step 4: Refine population
-        population = refine_population(new_population, distance_matrix)
+    best_individual = min(population, key=lambda x: x['fitness'])
+    cost = best_individual['fitness']
+    seq = [int(x + 1) for x in best_individual['chrom']]
+    return seq, cost
 
-        # Step 5: Cool down temperature
-        temperature *= cooling_rate
+if __name__ == '__main__':
+    data = "a280"
+    # problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
+    # distance_matrix = create_distance_matrix(problem)
 
+<<<<<<< HEAD
     # Best solution in the final population
     best_individual = min(population, key=lambda x: x.fitness)
     cost = best_individual.fitness
@@ -235,52 +163,19 @@ def genetic(distance_matrix, hyperparams=None):
     print("\nBest sequence:", seq)
     print("Cost:", cost)
     return seq, cost
+=======
+    # hyperparams = {
+    #     "POP_SIZE": 200,
+    #     "GEN_THRESH": 5000,
+    #     "crossover_rate": 0.9,
+    #     "mutation_rate": 0.3,
+    # }
+>>>>>>> 7b5cc78e25c014948f798d32cfb66f29bbbade9c
 
-def objective(trial):
-    params = {
-        "POP_SIZE": trial.suggest_int("POP_SIZE", 50, 100, step=10),
-        "GEN_THRESH": trial.suggest_int("GEN_THRESH", 10, 100, step=10),
-        "crossover_rate": trial.suggest_float("crossover_rate", 0.5, 1.0),
-        "mutation_rate": trial.suggest_float("mutation_rate", 0.05, 0.3),
-    }
-    start_time = time.time()
-    print(f"Trial {trial.number}: Hyperparameters = {params}")
-    best_individual = genetic(distance_matrix, hyperparams=params)
-    print(f"Trial {trial.number}: Fitness = {best_individual.fitness}\n")
-    time_to_converge = time.time() - start_time
+    # cost, seq = genetic(distance_matrix, hyperparams)
+    # print('\nCost:', cost)
+    # print('Sequence:', seq)
 
-    fitness_with_time_penalty = best_individual.fitness + (time_to_converge * 0.1)
-    return fitness_with_time_penalty
-
-
-if __name__ == "__main__":
-    SEED = 42  # Set a fixed seed for reproducibility
-    random.seed(SEED)
-    np.random.seed(SEED)
-
-    data = "att48"  # Specify your dataset
-    problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
-    distance_matrix = create_distance_matrix(problem)
-
-    hyperparams = {
-        "POP_SIZE": 10,
-        "GEN_THRESH": 20,
-        "cooling_rate": 0.9,
-        "crossover_rate": 0.7,
-        "mutation_rate": 0.3,
-    }
-
-    solution = genetic(distance_matrix, hyperparams)
-
-    opt_cost = get_optimal_cost(opt_sol.data, data)
-    print("\nOptimal cost:", opt_cost)
-
-    # Run optimization
-    # study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=SEED))
-    # study.optimize(objective, n_trials=20)
-    #
-    # print("\nBest Parameters:", study.best_params)
-    # print("Best Fitness:", study.best_value)
-    #
-    # optuna.visualization.plot_optimization_history(study).show()
-    # optuna.visualization.plot_param_importances(study).show()
+    # opt_cost = get_optimal_cost(opt_sol.data, data)
+    # print("\nOptimal cost:", opt_cost)
+    # print("\nRelative error:", (cost - opt_cost) / opt_cost)
