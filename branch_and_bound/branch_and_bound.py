@@ -1,98 +1,134 @@
-import sys
-import os
+import heapq  # Priority queue
+import numpy as np
 import tsplib95
-import time
+import os
+import sys
+import time  # To measure time taken
 
-# Get the current directory of the script
+# Import custom utilities
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Add the utils directory to sys.path
 utils_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(utils_dir)
 
-# Import the modules
-from utils.create_distance_matrix import create_distance_matrix
-from utils.generate_atsp import generate_atsp
-def calculate_tour_distance(tour, distance_matrix):
-    """
-    Calculate the total distance of a tour using the distance matrix.
-    """
-    total_distance = 0
-    for i in range(len(tour) - 1):
-        current_city = tour[i]
-        next_city = tour[(i + 1) % len(tour)]
-        total_distance += distance_matrix[current_city][next_city]
-    return total_distance
+from utils.create_distance_matrix import create_distance_matrix  # Import distance matrix utility
 
-def print_loading_bar(i, total):
-    progress = (i / total) * 100
-    sys.stdout.write(f"\rProgress: [{'#' * int(progress // 2)}{'.' * (50 - int(progress // 2))}] {progress:.2f}%")
-    sys.stdout.flush()
+
+def calculate_bound(path, distance_matrix):
+    """
+    Calculate a lower bound for the current state.
+    It includes the current path cost and an estimate for unvisited nodes.
+
+    Parameters:
+        path: List of visited nodes so far
+        distance_matrix: 2D numpy array representing distances between nodes
+
+    Returns:
+        A lower bound (int or float) on the total cost.
+    """
+    bound = 0
+    num_nodes = len(distance_matrix)
+    visited = set(path)
+
+    # Add the current path cost
+    for i in range(len(path) - 1):
+        bound += distance_matrix[path[i]][path[i + 1]]
+
+    # Add the minimum edge cost for all unvisited nodes
+    for i in range(num_nodes):
+        if i not in visited:
+            min_edge = min(distance_matrix[i][j] for j in range(num_nodes) if i != j)
+            bound += min_edge
+
+    return bound
+
+
+def generate_children(path, num_nodes):
+    """
+    Generate child nodes by adding unvisited nodes to the current path.
+
+    Parameters:
+        path: The current path
+        num_nodes: Total number of nodes in the graph
+
+    Returns:
+        List of new paths (children).
+    """
+    children = []
+    for i in range(num_nodes):
+        if i not in path:  # If not visited, add as a child path
+            children.append(path + [i])
+    return children
+
 
 def branch_and_bound(distance_matrix):
     """
-    Solve TSP using Branch and Bound approach with pre-computed distance matrix.
+    Solve the TSP problem using Branch and Bound.
+
+    Parameters:
+        distance_matrix: 2D numpy array representing distances between nodes
+
+    Returns:
+        best_tour: List representing the optimal path (tour)
+        best_cost: Cost of the optimal path
     """
-    num_nodes = distance_matrix.shape[0]
+    num_nodes = len(distance_matrix)
     best_tour = None
-    best_distance = float('inf')
+    best_cost = float('inf')
 
-    # Initialize the minimum cost matrix
-    def calculate_bound(visited, current_distance):
-        """
-        Calculate a lower bound for the current state.
-        """
-        bound = current_distance
-        for i in range(num_nodes):
-            if i not in visited:
-                min_edge = min(distance_matrix[i][j] for j in range(num_nodes) if j != i)
-                bound += min_edge
-        return bound
+    # Priority Queue: Each state is (bound, current_cost, path)
+    pq = []
+    initial_path = [0]  # Start from node 0
+    initial_bound = calculate_bound(initial_path, distance_matrix)
+    heapq.heappush(pq, (initial_bound, 0, initial_path))
 
-    def dfs(current_city, current_tour, visited, current_distance):
-        """
-        Perform DFS for Branch and Bound.
-        """
-        nonlocal best_tour, best_distance
+    while pq:
+        current_bound, current_cost, current_path = heapq.heappop(pq)
 
-        if len(current_tour) == num_nodes:
-            # Add return to start city
-            current_distance += distance_matrix[current_city][current_tour[0]]
-            if current_distance < best_distance:
-                best_distance = current_distance
-                best_tour = current_tour + [current_tour[0]]
-            return
+        # If the current bound exceeds the best cost, prune
+        if current_bound >= best_cost:
+            continue
 
-        for next_city in range(num_nodes):
-            if next_city not in visited:
-                next_distance = current_distance + distance_matrix[current_city][next_city]
-                bound = calculate_bound(visited | {next_city}, next_distance)
+        # If a complete tour is found, update the best cost and path
+        if len(current_path) == num_nodes:
+            final_cost = current_cost + distance_matrix[current_path[-1]][current_path[0]]
+            if final_cost < best_cost:
+                best_cost = final_cost
+                best_tour = current_path + [0]  # Return to starting node
+            continue
 
-                # Prune if bound is worse than current best
-                if bound < best_distance:
-                    dfs(next_city, current_tour + [next_city], visited | {next_city}, next_distance)
+        # Generate child nodes
+        for child in generate_children(current_path, num_nodes):
+            last_city = current_path[-1]
+            next_city = child[-1]
+            new_cost = current_cost + distance_matrix[last_city][next_city]
+            new_bound = calculate_bound(child, distance_matrix)
 
-    # Start the search from the first city
-    start_city = 0
-    dfs(start_city, [start_city], {start_city}, 0)
+            # Add the child to the queue if the bound is promising
+            if new_bound < best_cost:
+                heapq.heappush(pq, (new_bound, new_cost, child))
 
-    if best_tour:
-        best_tour = [i + 1 for i in best_tour]
+    return best_tour, best_cost
 
-    return best_tour, round(best_distance, 2)
 
 if __name__ == "__main__":
-    # Example usage with a TSPLIB problem
-    generate_atsp(n=20)
-    problem = tsplib95.load('data/random/atsp/random_atsp.atsp')
+    # Load a TSP problem using tsplib95
+    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
+
+    # Create the distance matrix from the TSP problem
     distance_matrix = create_distance_matrix(problem)
 
-    # Solve the problem
-    start = time.time()
-    best_tour, best_distance = branch_and_bound(distance_matrix)
-    end = time.time()
+    # Measure the start time
+    start_time = time.time()
 
-    # Print results
-    print(f"Best tour found: {best_tour}")
-    print(f"Tour distance: {best_distance}")
-    print(f"Time Taken: {end - start}")
+    # Solve the TSP using Branch and Bound
+    print("Solving TSP with Branch and Bound...\n")
+    best_tour, best_cost = branch_and_bound(distance_matrix)
+
+    # Measure the end time
+    end_time = time.time()
+    time_taken = end_time - start_time
+
+    # Display the results
+    print(f"Best Tour: {best_tour}")
+    print(f"Best Cost: {best_cost}")
+    print(f"Time Taken: {time_taken:.4f} seconds")
