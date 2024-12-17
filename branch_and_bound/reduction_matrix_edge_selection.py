@@ -141,9 +141,9 @@ def plot_convergence(costs):
 
 
 if __name__ == "__main__":
-    # Load the TSP problem from a file using tsplib95
-    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')  # Load the problem using tsplib95
-    distance_matrix_data = create_distance_matrix(problem)  # Use the imported function to get the matrix
+   
+    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')  
+    distance_matrix_data = create_distance_matrix(problem) 
 
    
     np.fill_diagonal(distance_matrix_data, float('inf'))
@@ -162,5 +162,5 @@ if __name__ == "__main__":
     print("Final Path (1-based indexing):", final_path)
     print(f"Time taken: {end_time - start_time:.4f} seconds")
 
-    # Plot the convergence
+    
     plot_convergence(convergence_costs)
