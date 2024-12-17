@@ -130,44 +130,44 @@ def randomized(distance_matrix):
 	return route, dist_best
 
 #%% Execution Example
-# import matplotlib.pyplot as plt
-# from gui.opt_solutions import opt_solutions
+import matplotlib.pyplot as plt
+from gui.opt_solutions import opt_solutions
 
-# problems = list(opt_solutions.keys())
+problems = list(opt_solutions.keys())[49:]
 
-# opt_solutions_routes = {}
+opt_solutions_routes = {}
 
-# to_plot = [["problem", "opt_cost", "calc_cost"]]
+to_plot = [["problem", "opt_cost", "calc_cost"]]
 
-# for problem_name in problems:
-# 	if ".atsp" in problem_name:
-# 		folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_atsp\\"
-# 	else:
-# 		folder = folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_tsp\\"
+for problem_name in problems:
+	if ".atsp" in problem_name:
+		folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_atsp\\"
+	else:
+		folder = folder = r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\data\ALL_tsp\\"
 
-# 	problem = tsplib95.load(f"{folder}{problem_name}")
-# 	distance_matrix = create_distance_matrix(problem)
+	problem = tsplib95.load(f"{folder}{problem_name}")
+	distance_matrix = create_distance_matrix(problem)
 
-# 	i = 0
-# 	while i < 50:
-# 		results = randomized(distance_matrix)
+	i = 0
+	while i < 50:
+		results = randomized(distance_matrix)
 
-# 		to_plot.append([
-# 			problem_name,
-# 			opt_solutions[problem_name],
-# 			results[1]
-# 		])
+		to_plot.append([
+			problem_name,
+			opt_solutions[problem_name],
+			results[1]
+		])
 
-# 		if opt_solutions[problem_name] == results[1]:
-# 			opt_solutions_routes[problem_name] = (opt_solutions[problem_name], [int(x) for x in results[0]])
+		if opt_solutions[problem_name] == results[1]:
+			opt_solutions_routes[problem_name] = (opt_solutions[problem_name], [int(x) for x in results[0]])
 
-# 		i += 1
+		i += 1
 
-# 	np.savetxt('randomized_cities_results_3.txt', np.array(to_plot), delimiter=' ', newline='\n', fmt="%s")
+	np.savetxt('randomized_cities_results_130plus.txt', np.array(to_plot), delimiter=' ', newline='\n', fmt="%s")
 
-# 	with open(r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\randomized\paths_3.txt", "w") as file:
-# 			for key, value in opt_solutions_routes.items():
-# 				file.write(f"{key}: {value}\n")
+	with open(r"C:\Users\USER\iCloudDrive\iCloud~md~obsidian\iCloud Vault\Masters\Advanced Algorithmics and Programming\Project\algs-tsp-project\randomized\paths.txt", "w") as file:
+			for key, value in opt_solutions_routes.items():
+				file.write(f"{key}: {value}\n")
 
 # #%%
 # plt.plot(range(len(results)), results)
