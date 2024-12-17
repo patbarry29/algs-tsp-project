@@ -1,10 +1,15 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
 import tsplib95
-from create_distance_matrix import create_distance_matrix
+from utils.create_distance_matrix import create_distance_matrix
 import matplotlib.pyplot as plt
 import networkx as nx
-from greedy.greedy import greedy
 import numpy as np
-
 
 def visualize_atsp(distance_matrix, tsp_algorithm):
     """
@@ -73,4 +78,4 @@ if __name__ == "__main__":
     distance_matrix = create_distance_matrix(problem)
 
     # Visualize the ATSP graph
-    visualize_atsp(distance_matrix, greedy)
+    #visualize_atsp(distance_matrix, greedy)
