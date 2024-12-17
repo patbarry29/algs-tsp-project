@@ -10,19 +10,16 @@ from utils.create_distance_matrix import create_distance_matrix
 from sklearn.manifold import MDS
 import matplotlib.pyplot as plt
 import networkx as nx
-#from greedy.greedy import greedy
 
 def visualize_tsp(distance_matrix, tsp_algorithm, seed=42):
     """
-    Visualizes a graph based on a distance matrix using MDS for accurate positioning.
-    This function displays only the TSP solution path with blue edges and black nodes.
+    Visualize the data points and the TSP path.
 
     Parameters:
-    - distance_matrix: 2D numpy array representing the distances between nodes.
-    - tsp_algorithm: Function that returns a tuple (cost, sequence) where sequence is the path of nodes.
-    - seed: Random state for MDS.
+    - distance_matrix
+    - tsp_algorithm
+    - seed
     """
-    # Create a graph object
     G = nx.Graph()
 
     # Add nodes
@@ -34,16 +31,10 @@ def visualize_tsp(distance_matrix, tsp_algorithm, seed=42):
     positions = mds.fit_transform(distance_matrix)
     pos = {i: positions[i] for i in range(num_nodes)}
 
-    # Draw nodes in black
     plt.axis("off")  # Remove axis borders
     plt.subplots_adjust(left=0, right=1, top=1, bottom=0)  # Remove extra margins
     nx.draw_networkx_nodes(G, pos, node_color='black', node_size=10)  # Black nodes
 
-    # Display node labels if the problem size is small
-    # if num_nodes < 50:
-    #     nx.draw_networkx_labels(G, pos, font_size=8, font_color='black')
-
-    # Run the TSP algorithm and extract the path
     sequence, cost = tsp_algorithm(distance_matrix)
 
     # Plot the edges based on the TSP sequence
@@ -57,11 +48,10 @@ def visualize_tsp(distance_matrix, tsp_algorithm, seed=42):
     if u >= 0 and v >= 0 and u < num_nodes and v < num_nodes:
         nx.draw_networkx_edges(G, pos, edgelist=[(u, v)], edge_color='blue', width=1)
 
-    # Display the plot
     plt.show()
 
 
 if __name__ == "__main__":
-    problem = tsplib95.load(f'../data/ALL_tsp/att48.tsp')
+    problem = tsplib95.load(f'../data/ALL_tsp/d198.tsp')
     distance_matrix = create_distance_matrix(problem)
     #visualize_tsp(distance_matrix, greedy)

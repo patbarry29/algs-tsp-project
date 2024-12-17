@@ -1,5 +1,6 @@
+ant_colony==0.1.2
 matplotlib==3.9.3
-networkx
+networkx==3.4.2
 numpy==2.2.0
 plotly==5.24.1
 psutil==6.1.0
@@ -7,4 +8,3 @@ PyQt5==5.15.11
 PyQt5_sip==12.15.0
 pyvis==0.3.2
 tsplib95==0.7.1
-tqdm==4.67.1

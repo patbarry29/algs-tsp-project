@@ -13,20 +13,14 @@ import numpy as np
 
 def visualize_atsp(distance_matrix, tsp_algorithm):
     """
-    Visualizes an ATSP graph using NetworkX's DiGraph (directed graph) to show edge directions.
-    Highlights the TSP solution path with red arrows and black nodes.
+    Visualize ATSP data points with the TSP path highlighted.
 
     Parameters:
-    - distance_matrix: 2D numpy array representing the distances between nodes.
-    - tsp_algorithm: Function that returns a tuple (cost, sequence) where sequence is the path of nodes.
+    - distance_matrix
+    - tsp_algorithm
     """
-    # Create a directed graph
     G = nx.DiGraph()
-
-    # Get the number of nodes
     num_nodes = distance_matrix.shape[0]
-
-    # Add nodes to the graph
     G.add_nodes_from(range(num_nodes))
 
     # Add edges with weights (only for non-zero distances)
@@ -46,7 +40,6 @@ def visualize_atsp(distance_matrix, tsp_algorithm):
     # Draw the directed edges with arrowheads
     nx.draw_networkx_edges(G, pos, edge_color='lightgray', arrowstyle='-|>', arrowsize=20, width=0.5)
 
-    # Run the TSP algorithm to get the TSP path and cost
     sequence, cost = tsp_algorithm(distance_matrix)
 
     # Highlight the TSP path (convert 1-indexed to 0-indexed)
@@ -64,17 +57,13 @@ def visualize_atsp(distance_matrix, tsp_algorithm):
             G, pos, edgelist=[(u, v)], edge_color='red', width=2, arrowstyle='-|>', arrowsize=10
         )
 
-    # Display the plot
     plt.title(f"ATSP Visualization with TSP Path (Cost: {cost})")
     plt.axis("off")  # Turn off the axis
     plt.show()
 
 
 if __name__ == "__main__":
-    # Load the ATSP problem
     problem = tsplib95.load(f'../data/ALL_atsp/ftv47.atsp')
-
-    # Create the distance matrix
     distance_matrix = create_distance_matrix(problem)
 
     # Visualize the ATSP graph

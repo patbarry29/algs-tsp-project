@@ -5,16 +5,15 @@ from collections import defaultdict
 from utils.create_distance_matrix import create_distance_matrix
 
 # Adapted from https://www.geeksforgeeks.org/travelling-salesman-problem-greedy-approach/
-# Function to find the minimum cost path for all paths using a greedy approach
 def greedy(tsp_matrix):
     """
-    Solve the TSP using a greedy approach to find an approximate minimum cost path.
+    Solve the TSP using a greedy approach.
 
-    Parameters:
-    tsp_matrix (np.ndarray): The distance matrix for the TSP.
+    Params:
+    tsp_matrix: the distance matrix
 
     Returns:
-    tuple: A list of the route sequence and the total cost.
+    tuple: (route, cost)
     """
     num_nodes = len(tsp_matrix)
     total_cost = 0
@@ -46,17 +45,12 @@ def greedy(tsp_matrix):
     last_city = route[step_counter] - 1 # Get the last city visited
     total_cost += tsp_matrix[last_city][0]   # Update the total cost
     route[step_counter + 1] = 1  # Update the route
-    # print(f"Last city visited: {last_city}")
-    # print(f"Returning to City 0 with distance: {tsp_matrix[last_city][0]}")
 
     return route[:step_counter + 2], total_cost
 
-# Driver Code
 if __name__ == "__main__":
-    data = "br17"
-    # data = None
-    problem = tsplib95.load(f'../data/ALL_atsp/{data}.atsp')
-    # problem = tsplib95.load('../random_tsp.tsp')
+    data = "berlin52"
+    problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
 
     distance_matrix = create_distance_matrix(problem)
     # print(f"Distance Matrix: \n {distance_matrix}")
@@ -68,5 +62,7 @@ if __name__ == "__main__":
     print("Sequence:", route)
     print("Cost:", total_cost)
     print(f"Running time: {running_time:.6f} seconds")
+
+
 
 
