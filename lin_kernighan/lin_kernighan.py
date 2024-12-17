@@ -89,13 +89,13 @@ def lin_kernighan(tsp_matrix, max_iterations=1000):
     best_tour = current_tour[:]
     best_cost = route_distance(best_tour, tsp_matrix)
     
-    for iteration in range(max_iterations):
+    for _ in range(max_iterations):
         improved = False
         tabu_edges = set()
         
         #depth was set to max 5 as if we incrise it 
         #it increases the time complexity even more, so 5 is a good compromise here
-        for depth in range(1, min(5, n)): 
+        for _ in range(1, min(5, n)): 
             move,gain = find_best_improvement(current_tour, tsp_matrix, tabu_edges)
             
             if move is None or gain <= 0:
@@ -114,6 +114,7 @@ def lin_kernighan(tsp_matrix, max_iterations=1000):
                 best_cost = current_cost
                 improved = True
         
+        #to escape local optima - random restart with 10% probability
         if not improved:
             if random.random() < 0.1:
                 current_tour = list(range(n))
