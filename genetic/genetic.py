@@ -4,28 +4,21 @@ from random import randint
 import matplotlib.pyplot as plt
 import numpy as np
 import tsplib95
-from data.opt_cost import tsp as opt_sol
 from utils.create_distance_matrix import create_distance_matrix
-from utils.get_opt_cost import get_optimal_cost
-
-# from utils.get_opt_cost import get_optimal_cost
-# from data.opt_cost import tsp as opt_sol
-# from utils.create_distance_matrix import create_distance_matrix
 
 INT_MAX = 2147483647
 
 def rand_num(start, end):
-    """Returns a random number in the range [start, end)."""
     return randint(start, end - 1)
 
 def create_chrom(nb_cities):
-    """Creates a valid chromosome (tour) starting and ending at city 0."""
+   # Create a valid chromosome (route)
     chrom = [0] + random.sample(range(1, nb_cities), nb_cities - 1)
     chrom.append(0)  # Return to the starting city
     return chrom
 
 def cal_fitness(chrom, distance_matrix):
-    """Calculates the fitness value (total cost) of a chromosome."""
+    # Calculate fitness value (cost) of a chromosome(route)
     f = 0
     for i in range(len(chrom) - 1):
         city1 = chrom[i]
@@ -36,7 +29,7 @@ def cal_fitness(chrom, distance_matrix):
     return f
 
 def initialize_population(nb_cities, pop_size, distance_matrix):
-    """Creates the initial population of individuals."""
+    # Create the initial population
     population = []
     for _ in range(pop_size):
         chrom = create_chrom(nb_cities)
@@ -45,7 +38,7 @@ def initialize_population(nb_cities, pop_size, distance_matrix):
     return population
 
 def selection_tournament(population, tourn_size=3):
-    """Selects the best individuals from a population using tournament selection."""
+    # Tournament selection
     pop_size = len(population)
     fitness_array = np.array([ind['fitness'] for ind in population])
     aspirants_idx = np.random.randint(pop_size, size=(pop_size, tourn_size))  # Select indices for tournaments
@@ -56,7 +49,7 @@ def selection_tournament(population, tourn_size=3):
     return selected_population
 
 def apply_crossover(parent1, parent2, distance_matrix):
-    """Applies Order Crossover (OX1) ensuring the starting city remains the same."""
+    # Apply Order Crossover (OX1)
     size = len(parent1['chrom']) - 1
     child_chrom = [-1] * size
     child_chrom[0] = parent1['chrom'][0]  # Keep the starting city
@@ -72,7 +65,7 @@ def apply_crossover(parent1, parent2, distance_matrix):
     child_fitness = cal_fitness(child_chrom, distance_matrix)
     return {'chrom': child_chrom, 'fitness': child_fitness}
 def apply_mutation(population, mutation_rate, distance_matrix):
-    """Applies reverse mutation without altering the starting city."""
+    # Apply reverse mutation
     for individual in population:
         if random.random() < mutation_rate:
             Chrom = np.array(individual['chrom'])
@@ -162,31 +155,6 @@ def plot_fitness_vs_generation(distance_matrix):
     plt.grid()
     plt.show()
 
-# def plot_computation_time_vs_problem():
-#     """Plots computational time for different TSPLIB instances over various generation thresholds."""
-#     data = ['burma14', 'bayg29', 'eil51']
-#     gen_thresh = [100, 500, 900]
-#     computation_times = {thresh: [] for thresh in gen_thresh}
-#
-#     for d in data:
-#         for thresh in gen_thresh:
-#             start_time = time.time()
-#             problem = tsplib95.load(f'../data/ALL_tsp/{d}.tsp')
-#             distance_matrix = create_distance_matrix(problem)
-#             _, _ = genetic(distance_matrix, {"GEN_THRESH": thresh})
-#             end_time = time.time()
-#             computation_times[thresh].append((end_time - start_time) / 1000)
-#
-#     for thresh in gen_thresh:
-#         plt.plot(data, computation_times[thresh], label=f'Generation Threshold: {thresh}', marker='o')
-#
-#     plt.title('Computation Time vs Problem')
-#     plt.xlabel('Problem')
-#     plt.ylabel('Time (s)')
-#     plt.legend()
-#     plt.grid()
-#     plt.show()
-
 def plot_computation_time_vs_problem():
     """Plots computational time for different TSPLIB instances over various generation thresholds."""
     data = ['burma14', 'bayg29', 'eil51']
@@ -246,28 +214,25 @@ def gen_thresh_pop_size_vs_computation_time():
 
 
 if __name__ == '__main__':
-    gen_thresh_pop_size_vs_computation_time()
-    # data = "eil51"
-    # problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
-    # # problem = tsplib95.load('../data/random/tsp/random_tsp5.tsp')
-    # distance_matrix = create_distance_matrix(problem)
+    data = "eil51"
+    problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
+    distance_matrix = create_distance_matrix(problem)
 
-    # hyperparams = {
-    #     "POP_SIZE": 200,
-    #     "GEN_THRESH": 5000,
-    #     "crossover_rate": 0.9,
-    #     "mutation_rate": 0.3,
-    # }
+    hyperparams = {
+        "POP_SIZE": 200,
+        "GEN_THRESH": 5000,
+        "crossover_rate": 0.9,
+        "mutation_rate": 0.3,
+    }
 
     # plot_fitness_vs_generation(distance_matrix)
     # plot_computation_time_vs_problem()
+    # gen_thresh_pop_size_vs_computation_time()
 
-    # cost, seq = genetic(distance_matrix, {"GEN_THRESH": 5000})
-    # print('\nCost:', cost)
-    # print('Sequence:', seq)
-    #
-    # opt_cost = get_optimal_cost(opt_sol.data, data)
-    # print("\nOptimal cost:", opt_cost)
-    # print("\nRelative error:", (cost - opt_cost) / opt_cost)
+
+    cost, seq = genetic(distance_matrix)
+    print('\nCost:', cost)
+    print('Sequence:', seq)
+
 
 

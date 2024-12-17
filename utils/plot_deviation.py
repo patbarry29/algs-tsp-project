@@ -13,9 +13,9 @@ def plot_deviation(tsplib_instances, algo_function):
     Plot the deviation between the algorithm's output
     and the optimal costs for multiple TSPLIB instances.
 
-    Parameters:
-    tsplib_instances (list): List of TSPLIB instance names.
-    algo_function (function): The algorithm function to compute the cost and route.
+    Params:
+    tsplib_instances (list)
+    algo_function (function)
     """
     deviations = []
     instance_names = []
@@ -76,7 +76,6 @@ def plot_deviation_genetic_vs_pop_size(tsplib_instances):
         print(f"Solving for instance: {instance_name}")
         distance_matrix = create_distance_matrix(problem)
 
-        # Run the genetic algorithm for 3 different population sizes
         pop_sizes = [100, 500, 1000, 5000]
         for pop_size in pop_sizes:
             print(f"Running genetic algorithm with population size: {pop_size}")
@@ -84,7 +83,6 @@ def plot_deviation_genetic_vs_pop_size(tsplib_instances):
             optimal_cost = get_optimal_cost(opt_sol.data, instance_name)
 
             if optimal_cost is not None:
-                # Calculate the deviation in percentage
                 error = (algo_cost - optimal_cost) / optimal_cost * 100
                 deviations[pop_size].append(error)
             else:
@@ -98,13 +96,11 @@ def plot_deviation_genetic_vs_pop_size(tsplib_instances):
 
         plt.figure(figsize=(6, 6))
 
-        # Plot each population size as a different bar color
         for i, pop_size in enumerate([100, 500, 1000, 5000]):
             deviations_for_pop_size = deviations[pop_size]
             x_positions = x + (i - 1) * width  # shift for each population size
             bars = plt.bar(x_positions, deviations_for_pop_size, width=width, label=f'Pop {pop_size}')
 
-            # Add the percentage on top of each bar
             for bar, deviation in zip(bars, deviations_for_pop_size):
                 height = bar.get_height()
                 plt.text(
@@ -158,13 +154,11 @@ def plot_deviation_genetic_vs_gen_thresh(tsplib_instances):
         width = 0.2
         plt.figure(figsize=(6, 6))
 
-        # Plot each population size as a different bar color
         for i, gen_thresh in enumerate([100, 500, 1000, 5000]):
             deviations_for_gen_thresh = deviations[gen_thresh]
             x_positions = x + (i - 1) * width  # shift for each population size
             bars = plt.bar(x_positions, deviations_for_gen_thresh, width=width, label=f'Gen thresh {gen_thresh}')
 
-            # Add the percentage on top of each bar
             for bar, deviation in zip(bars, deviations_for_gen_thresh):
                 height = bar.get_height()
                 plt.text(
