@@ -192,8 +192,8 @@ class MainWindow(QMainWindow):
 			problem = tsplib95.load(f"{parent_dir}\\data\\{folder}\\{problem_name}")
 			sparsity_check = True
 			#if it's a known problem get the opt too
-			opt_cost = opt_solutions[problem_name]#[0]
-			#opt_route = opt_solutions[problem_name][1]
+			opt_cost = opt_solutions[problem_name][0]
+			opt_route = opt_solutions[problem_name][1]
 			optional_line = f", and the optimum cost is {opt_cost}"
 		else:
 			# Generate problem
@@ -230,9 +230,9 @@ class MainWindow(QMainWindow):
 		for i in range(len(route)-1):
 			pairs_route.append((route[i], route[i+1]))
 
-		# pairs_opt_route = [(opt_route[-1], opt_route[0])]
-		# for i in range(len(route)-1):
-		# 	pairs_opt_route.append((opt_route[i], opt_route[i+1]))
+		pairs_opt_route = [(opt_route[-1], opt_route[0])]
+		for i in range(len(opt_route)-1):
+			pairs_opt_route.append((opt_route[i], opt_route[i+1]))
 
 		all_pairs = [(route[i], route[j]) for i in range(len(route)) for j in range(len(route)) if i != j]
 
@@ -246,14 +246,15 @@ class MainWindow(QMainWindow):
 				if (length > 0) and (length < 1000000000):
 					if pair in pairs_route:
 						edge_color = '#0770ff'
-					#elif pair in pairs_opt_route:
-						#edge_color = green
+					# elif pair in pairs_opt_route:
+					# 	edge_color = green
 					else: 
 						edge_color = '#ccccdd' #Gray
 
 					net.add_edge(int(source), int(target), length=length, color=edge_color)
 			else:
 				if (length > 0):
+					
 					if pair in pairs_route:
 						edge_color = '#0770ff'
 					#elif pair in pairs_opt_route:

@@ -1,0 +1,2 @@
+problem opt_cost calc_cost time memory
+gr21.tsp 2707 2707.0 350.5011661052704 3203.0546875
