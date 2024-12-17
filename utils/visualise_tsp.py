@@ -56,6 +56,6 @@ def visualize_tsp(distance_matrix, tsp_algorithm, seed=42):
 
 
 if __name__ == "__main__":
-    problem = tsplib95.load(f'../data/ALL_tsp/att48.tsp')
+    problem = tsplib95.load(f'../data/ALL_tsp/d198.tsp')
     distance_matrix = create_distance_matrix(problem)
     visualize_tsp(distance_matrix, greedy)

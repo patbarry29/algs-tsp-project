@@ -1,5 +1,4 @@
 ant_colony==0.1.2
-greedy==0.1.1
 matplotlib==3.9.3
 networkx==3.4.2
 numpy==2.2.0

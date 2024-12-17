@@ -53,7 +53,9 @@ def plot_runtime(tsplib_instances, algo_function):
 if __name__ == "__main__":
     tsplib_instances = [
         "berlin52",
+        "st70",
         "ch150",
+        "d198",
         "pr1002",
         "pla7397"
     ]

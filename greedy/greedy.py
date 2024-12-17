@@ -53,9 +53,9 @@ def greedy(tsp_matrix):
 
 # Driver Code
 if __name__ == "__main__":
-    data = "br17"
+    data = "berlin52"
     # data = None
-    problem = tsplib95.load(f'../data/ALL_atsp/{data}.atsp')
+    problem = tsplib95.load(f'../data/ALL_tsp/{data}.tsp')
     # problem = tsplib95.load('../random_tsp.tsp')
 
     distance_matrix = create_distance_matrix(problem)
@@ -68,5 +68,7 @@ if __name__ == "__main__":
     print("Sequence:", route)
     print("Cost:", total_cost)
     print(f"Running time: {running_time:.6f} seconds")
+
+
 
 

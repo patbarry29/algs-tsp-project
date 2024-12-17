@@ -8,8 +8,9 @@ import psutil
 from branch_and_bound.branch_and_bound import branch_and_bound
 from greedy.greedy import greedy
 from lin_kernighan.lin_kernighan import lin_kernighan
-from Randomised.randomised import randomised
-from ant_colony.ant_colony import ant_colony
+from randomized.randomized import randomized
+from dynamic_programming
+# from ant_colony.ant_colony import ant_colony
 from utils.create_distance_matrix import create_distance_matrix
 from utils.generate_tsp import generate_tsp
 from brute_force.brute_force import brute_force
@@ -77,7 +78,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes):
 
 
 if __name__ == '__main__':
-    algorithms = [brute_force, randomised, branch_and_bound, greedy, lin_kernighan]
+    algorithms = [brute_force, randomized, branch_and_bound, greedy, lin_kernighan]
     algorithms_names = ['Brute Force', 'Randomised', 'Branch and Bound', 'Greedy', 'Lin-Kernighan']
     problem_sizes = list(range(3, 10, 1))
     plot_algs_vs_problem_size(algorithms, algorithms_names, problem_sizes)
