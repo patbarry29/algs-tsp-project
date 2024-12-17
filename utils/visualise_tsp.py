@@ -1,10 +1,16 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
 import tsplib95
-from create_distance_matrix import create_distance_matrix
+from utils.create_distance_matrix import create_distance_matrix
 from sklearn.manifold import MDS
 import matplotlib.pyplot as plt
 import networkx as nx
-from greedy.greedy import greedy
-
+#from greedy.greedy import greedy
 
 def visualize_tsp(distance_matrix, tsp_algorithm, seed=42):
     """
@@ -58,4 +64,4 @@ def visualize_tsp(distance_matrix, tsp_algorithm, seed=42):
 if __name__ == "__main__":
     problem = tsplib95.load(f'../data/ALL_tsp/d198.tsp')
     distance_matrix = create_distance_matrix(problem)
-    visualize_tsp(distance_matrix, greedy)
+    #visualize_tsp(distance_matrix, greedy)

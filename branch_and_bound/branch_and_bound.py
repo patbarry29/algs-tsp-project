@@ -1,11 +1,9 @@
-import heapq  # Priority queue
+import heapq  
 import numpy as np
 import tsplib95
 import os
 import sys
-import time  # To measure time taken
-
-# Import custom utilities
+import time  
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utils_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(utils_dir)
@@ -14,26 +12,16 @@ from utils.create_distance_matrix import create_distance_matrix  # Import distan
 
 
 def calculate_bound(path, distance_matrix):
-    """
-    Calculate a lower bound for the current state.
-    It includes the current path cost and an estimate for unvisited nodes.
-
-    Parameters:
-        path: List of visited nodes so far
-        distance_matrix: 2D numpy array representing distances between nodes
-
-    Returns:
-        A lower bound (int or float) on the total cost.
-    """
+    
     bound = 0
     num_nodes = len(distance_matrix)
     visited = set(path)
 
-    # Add the current path cost
+  
     for i in range(len(path) - 1):
         bound += distance_matrix[path[i]][path[i + 1]]
 
-    # Add the minimum edge cost for all unvisited nodes
+   
     for i in range(num_nodes):
         if i not in visited:
             min_edge = min(distance_matrix[i][j] for j in range(num_nodes) if i != j)
@@ -43,16 +31,7 @@ def calculate_bound(path, distance_matrix):
 
 
 def generate_children(path, num_nodes):
-    """
-    Generate child nodes by adding unvisited nodes to the current path.
-
-    Parameters:
-        path: The current path
-        num_nodes: Total number of nodes in the graph
-
-    Returns:
-        List of new paths (children).
-    """
+    
     children = []
     for i in range(num_nodes):
         if i not in path:  # If not visited, add as a child path
@@ -61,21 +40,12 @@ def generate_children(path, num_nodes):
 
 
 def branch_and_bound(distance_matrix):
-    """
-    Solve the TSP problem using Branch and Bound.
-
-    Parameters:
-        distance_matrix: 2D numpy array representing distances between nodes
-
-    Returns:
-        best_tour: List representing the optimal path (tour)
-        best_cost: Cost of the optimal path
-    """
+    
     num_nodes = len(distance_matrix)
     best_tour = None
     best_cost = float('inf')
 
-    # Priority Queue: Each state is (bound, current_cost, path)
+    
     pq = []
     initial_path = [0]  # Start from node 0
     initial_bound = calculate_bound(initial_path, distance_matrix)
@@ -84,11 +54,11 @@ def branch_and_bound(distance_matrix):
     while pq:
         current_bound, current_cost, current_path = heapq.heappop(pq)
 
-        # If the current bound exceeds the best cost, prune
+       
         if current_bound >= best_cost:
             continue
 
-        # If a complete tour is found, update the best cost and path
+        
         if len(current_path) == num_nodes:
             final_cost = current_cost + distance_matrix[current_path[-1]][current_path[0]]
             if final_cost < best_cost:
@@ -96,14 +66,14 @@ def branch_and_bound(distance_matrix):
                 best_tour = current_path + [0]  # Return to starting node
             continue
 
-        # Generate child nodes
+       
         for child in generate_children(current_path, num_nodes):
             last_city = current_path[-1]
             next_city = child[-1]
             new_cost = current_cost + distance_matrix[last_city][next_city]
             new_bound = calculate_bound(child, distance_matrix)
 
-            # Add the child to the queue if the bound is promising
+           
             if new_bound < best_cost:
                 heapq.heappush(pq, (new_bound, new_cost, child))
 
