@@ -126,17 +126,17 @@ def branch_and_bound1(CostGraphMatrix):
     return float('inf'), [], convergence_costs  # Return a default path when no solution is found
 
 
-def plot_convergence(costs):
-    plt.figure(figsize=(10, 6))
-    plt.plot(range(len(costs)), costs, marker='o', linestyle='-', color='b')
-    plt.title('Convergence of Branch and Bound')
-    plt.xlabel('Iteration')
-    plt.ylabel('Total Cost')
-    plt.grid()
-    # Print total cost on the plot
-    plt.text(len(costs) - 1, costs[-1], f'Total Cost = {costs[-1]}', 
-             horizontalalignment='right', verticalalignment='bottom', fontsize=12, color='red')
-    plt.show()
+#def plot_convergence(costs):
+    #plt.figure(figsize=(10, 6))
+    #plt.plot(range(len(costs)), costs, marker='o', linestyle='-', color='b')
+    #plt.title('Convergence of Branch and Bound')
+    #plt.xlabel('Iteration')
+    #plt.ylabel('Total Cost')
+    #plt.grid()
+    
+    #plt.text(len(costs) - 1, costs[-1], f'Total Cost = {costs[-1]}', 
+             #horizontalalignment='right', verticalalignment='bottom', fontsize=12, color='red')
+    #plt.show()
 
 
 
@@ -163,4 +163,4 @@ if __name__ == "__main__":
     print(f"Time taken: {end_time - start_time:.4f} seconds")
 
     
-    plot_convergence(convergence_costs)
+    #plot_convergence(convergence_costs)
