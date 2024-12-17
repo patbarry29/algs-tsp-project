@@ -5,6 +5,7 @@ import numpy as np
 import sys
 import os
 
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
@@ -16,7 +17,7 @@ from branch_and_bound.branch_and_bound import branch_and_bound
 from greedy.greedy import greedy
 from lin_kernighan.lin_kernighan import lin_kernighan
 from randomized.randomized import randomized
-# from ant_colony.ant_colony import ant_colony
+from ant_colony.ant_colony import ant_colony
 from utils.create_distance_matrix import create_distance_matrix
 from utils.generate_tsp import generate_tsp
 from brute_force.brute_force import brute_force
@@ -106,7 +107,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
         averaged_metrics_per_solver.append(solver_avg_metrics)
 
     # Plot the results
-    plt.figure(figsize=(6, 6))
+    plt.figure(figsize=(10, 6))
 
     # Define a variety of line styles
     line_styles = ['-', '--', '-.', ':', (0, (3, 1, 1, 1, 1, 1))]  # Add more if needed
@@ -172,7 +173,7 @@ def plot_algs_vs_problem_size(tsp_solvers, solver_names, problem_sizes, measure=
 
 
 if __name__ == '__main__':
-    algorithms = [greedy]  # Add your other algorithms here
-    algorithms_names = ['Greedy']  # Add names for your algorithms here
-    problem_sizes = list(range(4, 10, 1))
+    algorithms = [brute_force, branch_and_bound, dynamic_programming, randomized, ant_colony]  # Add your other algorithms here
+    algorithms_names = ['Brute Force', 'Branch and Bound', 'Dynamic Programming', 'Mark of Chain', 'Ant Colony']
+    problem_sizes = list(range(4, 30, 1))
     plot_algs_vs_problem_size(algorithms, algorithms_names, problem_sizes, measure='both')

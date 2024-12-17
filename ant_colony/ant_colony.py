@@ -148,7 +148,7 @@ def ant_colony(distance_matrix, params={}):
 if __name__ == "__main__":
     # generate_tsp(n=100)
     # problem = tsplib95.load('data/random/tsp/random_tsp.tsp')
-    problem = tsplib95.load('data/ALL_tsp/bier127.tsp')
+    problem = tsplib95.load(r'data\\ALL_tsp\\burma14.tsp')
     # problem = tsplib95.load('data/random/atsp/random_atsp.atsp')
 
     distance_matrix = create_distance_matrix(problem)
