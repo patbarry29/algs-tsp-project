@@ -16,6 +16,7 @@ from utils.create_distance_matrix import create_distance_matrix
 # Node class to store each node along with the cost, level, and vertex
 class Node:
     def __init__(self, parentMatrix, path, level, i, j):
+        N = len(parentMatrix)
         self.path = path.copy()  # Copy the path from the parent node
         self.reducedMatrix = [row.copy() for row in parentMatrix]  # Copy the reduced matrix
         self.cost = 0  # The cost of this node
@@ -39,6 +40,7 @@ class Node:
 
 # Perform row reduction
 def rowReduction(reducedMatrix):
+    N = len(reducedMatrix)
     row = [float('inf')] * N
     for i in range(N):
         for j in range(N):
@@ -53,6 +55,7 @@ def rowReduction(reducedMatrix):
 
 # Perform column reduction
 def columnReduction(reducedMatrix):
+    N = len(reducedMatrix)
     col = [float('inf')] * N
     for i in range(N):
         for j in range(N):
@@ -80,6 +83,7 @@ def edge_selection(parent_node, i, j):
 
 # Solve TSP using Branch and Bound with tracking for convergence
 def branch_and_bound(CostGraphMatrix):
+    N = len(CostGraphMatrix) 
     pq = PriorityQueue()
     convergence_costs = []  # List to track costs at each iteration
 
@@ -142,7 +146,7 @@ if __name__ == "__main__":
     # Load the TSP problem from a file using tsplib95
     problem = tsplib95.load('data/random/atsp/random_atsp.atsp')  # Load the problem using tsplib95
     distance_matrix_data = create_distance_matrix(problem)  # Use the imported function to get the matrix
-    N = len(distance_matrix_data)
+
 
     # Set diagonal to infinity to prevent self-loops
     np.fill_diagonal(distance_matrix_data, float('inf'))
