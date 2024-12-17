@@ -82,11 +82,12 @@ def edge_selection(parent_node, i, j):
     return edge_cost
 
 # Solve TSP using Branch and Bound with tracking for convergence
-def branch_and_bound(CostGraphMatrix):
+def branch_and_bound1(CostGraphMatrix):
     N = len(CostGraphMatrix) 
     pq = PriorityQueue()
     convergence_costs = []  # List to track costs at each iteration
-
+    final_path = []  # To store the final path
+    
     # Perform initial reduction and create root node
     root = Node(CostGraphMatrix, [], 0, -1, 0)
     root.cost = calculateCost(root.reducedMatrix)
@@ -103,8 +104,14 @@ def branch_and_bound(CostGraphMatrix):
         if current_node.level == N - 1:
             current_node.path.append((i, 0))  # Append the return to the start
             # Convert path to 1-based indexing for readability
-            converted_path = [u + 1 for u, v in current_node.path]
-            return current_node.cost, converted_path, convergence_costs  # Return both cost and 1-based path
+            final_path = [u + 1 for u, v in current_node.path]
+            
+            # Calculate the final cost based on the original matrix
+            total_cost = 0
+            for i in range(len(final_path) - 1):
+                total_cost += CostGraphMatrix[final_path[i] - 1][final_path[i + 1] - 1]  # Convert back to 0-based indexing
+
+            return total_cost, final_path, convergence_costs  # Return both cost and 1-based path
 
         # Generate child nodes for the current node
         for j in range(N):
@@ -117,15 +124,6 @@ def branch_and_bound(CostGraphMatrix):
                 pq.put((child.cost, child))
 
     return float('inf'), [], convergence_costs  # Return a default path when no solution is found
-
-
-# Calculate the final cost based on the original matrix
-def calculateFinalCost(path, originalMatrix):
-    total_cost = 0
-    for i in range(len(path) - 1):
-        total_cost += originalMatrix[path[i] - 1][path[i + 1] - 1]  # Convert back to 0-based indexing for matrix lookup
-    return total_cost, path
-
 
 # Plot convergence
 def plot_convergence(costs):
@@ -144,9 +142,8 @@ def plot_convergence(costs):
 # Example usage
 if __name__ == "__main__":
     # Load the TSP problem from a file using tsplib95
-    problem = tsplib95.load('data/random/atsp/random_atsp.atsp')  # Load the problem using tsplib95
+    problem = tsplib95.load('data/random/tsp/random_tsp.tsp')  # Load the problem using tsplib95
     distance_matrix_data = create_distance_matrix(problem)  # Use the imported function to get the matrix
-
 
     # Set diagonal to infinity to prevent self-loops
     np.fill_diagonal(distance_matrix_data, float('inf'))
@@ -157,15 +154,12 @@ if __name__ == "__main__":
 
     # Measure the time taken to solve the problem
     start_time = time.time()
-    total_cost, final_path, convergence_costs = branch_and_bound(distance_matrix_data)
+    total_cost, final_path, convergence_costs = branch_and_bound1(distance_matrix_data)
     end_time = time.time()
-
-    # Recalculate the cost using the original matrix
-    final_cost, adjusted_path = calculateFinalCost(final_path, distance_matrix_data)
 
     # Print the results
     print(f"\nTotal cost based on reduced matrix: {total_cost}")
-    print("Final Path (1-based indexing):", adjusted_path)
+    print("Final Path (1-based indexing):", final_path)
     print(f"Time taken: {end_time - start_time:.4f} seconds")
 
     # Plot the convergence
